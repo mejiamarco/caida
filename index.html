@@ -95,7 +95,7 @@
         }
         .btn-action:hover { background: #00ff00; color: #000; box-shadow: 0 0 30px #00ff00; }
 
-        /* VISTA ESTUDIANTE / MONITOREO PROFESOR */
+        /* VISTA PRINCIPAL */
         .slide-container { position: relative; width: 100%; max-width: 1100px; margin-top: 1.5rem; transition: margin-right 0.3s ease; }
         .neon-box {
             position: relative; width: 100%; min-height: 75vh; background: rgba(0, 0, 0, 0.82); border-radius: 2.5rem; display: flex; flex-direction: column; padding: 2.5rem 2.5rem 4.5rem 2.5rem; border: 5px solid #ff0000; box-shadow: 0 0 15px #ff0000, 0 0 35px #ffcc00, 0 0 70px #00ff00, inset 0 0 25px rgba(255, 0, 0, 0.25); animation: neonRYG 3s infinite alternate;
@@ -105,16 +105,16 @@
         .slide-indicator { position: absolute; top: 1.2rem; right: 2rem; font-size: 0.85rem; color: #ffe680; letter-spacing: 3px; }
         .question-title { font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 700; color: #ffffff; text-shadow: 0 0 8px #ffcc00, 0 0 18px #ff0000; text-align: center; margin-top: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 2px solid rgba(255, 204, 0, 0.6); }
 
-        /* BARRA DE HERRAMIENTAS CON COLORES Y BORRADO */
+        /* BARRA DE HERRAMIENTAS Y HERRAMIENTAS DE DIBUJO */
         .toolbar { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
         .tool-btn { background: rgba(255, 204, 0, 0.08); color: #ffe680; border: 2px solid #ffcc00; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; text-transform: uppercase; font-weight: bold; }
         .tool-btn.active { background: #ffcc00; color: #1a1200; }
 
-        .color-palette { display: none; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.6); padding: 0.3rem 0.8rem; border-radius: 1rem; border: 1px solid #ffcc00; }
-        .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; transition: transform 0.2s; }
-        .color-dot:hover, .color-dot.active { transform: scale(1.25); box-shadow: 0 0 8px #fff; }
+        .color-palette { display: none; align-items: center; gap: 0.6rem; background: rgba(0,0,0,0.85); padding: 0.4rem 0.9rem; border-radius: 1rem; border: 2px solid #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
+        .color-dot { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; transition: transform 0.2s; }
+        .color-dot:hover, .color-dot.active { transform: scale(1.3); box-shadow: 0 0 10px #fff; }
 
-        .btn-clear { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; font-weight: bold; display: none; }
+        .btn-clear { background: rgba(255, 0, 0, 0.25); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; font-weight: bold; display: none; }
         .btn-clear:hover { background: #ff0000; color: #fff; box-shadow: 0 0 15px #ff0000; }
 
         .workspace { flex: 1; position: relative; border-radius: 1.2rem; border: 2px dashed rgba(255, 204, 0, 0.5); background: rgba(15, 15, 5, 0.4); overflow: hidden; min-height: 280px; }
@@ -133,7 +133,7 @@
         .nav-btn { background: rgba(0, 0, 0, 0.7); color: #ffe680; border: 2px solid #ffcc00; border-radius: 2rem; padding: 0.6rem 1.6rem; cursor: pointer; font-weight: bold; }
         .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        /* PANEL PLEGABLE TIPO MEET (PROFESOR) */
+        /* PANEL PLEGABLE TIPO MEET */
         .meet-drawer {
             position: fixed; top: 0; right: -340px; width: 340px; height: 100vh; background: rgba(18, 22, 28, 0.96); border-left: 3px solid #ffcc00; box-shadow: -5px 0 25px rgba(0,0,0,0.8); z-index: 150; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; padding: 1.5rem 1rem;
         }
@@ -147,7 +147,7 @@
         .drawer-header h3 { color: #ffcc00; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
 
         .btn-master-clear {
-            width: 100%; padding: 0.75rem; background: rgba(255, 0, 0, 0.2); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.8rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; margin-bottom: 1rem;
+            width: 100%; padding: 0.75rem; background: rgba(255, 0, 0, 0.25); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.8rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; margin-bottom: 1rem;
         }
         .btn-master-clear:hover { background: #ff0000; color: #fff; box-shadow: 0 0 15px #ff0000; }
 
@@ -164,7 +164,6 @@
         input:checked + .slider:before { transform: translateX(22px); }
     </style>
 
-    <!-- SDKs de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
@@ -199,7 +198,7 @@
         </div>
     </div>
 
-    <!-- PANEL PLEGABLE TIPO MEET (CONTROL DEL PROFESOR) -->
+    <!-- PANEL PLEGABLE TIPO MEET -->
     <div class="meet-drawer" id="meetDrawer">
         <button class="drawer-toggle" onclick="toggleDrawer()" title="Panel de Participantes">👥</button>
         <div class="drawer-header">
@@ -222,159 +221,45 @@
             <div class="permission-banner locked" id="permBanner">🔒 MODO LECTURA</div>
             <div class="slide-indicator" id="slideIndicator">PREGUNTA 1 DE 7</div>
 
-            <div class="question-slide active" id="slide1">
-                <h1 class="question-title">1. ¿Qué se mantiene igual en las dos caídas?</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey1" onclick="setMode(1, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw1" onclick="setMode(1, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette1">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(1, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(1, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(1, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(1, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(1, '#ffffff', this)"></div>
-                    </div>
+            <!-- PREGUNTAS 1 A 7 -->
+            <script>
+                const questions = [
+                    "1. ¿Qué se mantiene igual en las dos caídas?",
+                    "2. ¿Qué cambia entre la primera y la segunda caída?",
+                    "3. La plastilina se deforma más sobre ____________ ¿por qué?",
+                    "4. Dibuja la esfera como quedó después de la caída sobre la mesa",
+                    "5. Dibuja la esfera como quedó después de la caída sobre la esponja",
+                    "6. ¿Qué pasa si lanzo la bolita de una altura de 10 cm?",
+                    "7. ¿Qué pasa si lanzo la bolita de una altura de 30 cm?"
+                ];
 
-                    <button class="btn-clear" id="btnClear1" onclick="clearLocalCanvas(1)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace1">
-                    <textarea class="text-answer" id="text1" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas1"></canvas>
-                </div>
-            </div>
+                questions.forEach((q, idx) => {
+                    const i = idx + 1;
+                    document.write(`
+                        <div class="question-slide ${i === 1 ? 'active' : ''}" id="slide${i}">
+                            <h1 class="question-title">${q}</h1>
+                            <div class="toolbar">
+                                <button class="tool-btn active" id="btnKey${i}" onclick="setMode(${i}, 'keyboard')">⌨ Teclado</button>
+                                <button class="tool-btn" id="btnDraw${i}" onclick="setMode(${i}, 'draw')">✎ Pizarra</button>
+                                
+                                <div class="color-palette" id="palette${i}">
+                                    <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(${i}, '#00ff00', this)"></div>
+                                    <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(${i}, '#ffcc00', this)"></div>
+                                    <div class="color-dot" style="background: #ff0000;" onclick="selectColor(${i}, '#ff0000', this)"></div>
+                                    <div class="color-dot" style="background: #00ffff;" onclick="selectColor(${i}, '#00ffff', this)"></div>
+                                    <div class="color-dot" style="background: #ffffff;" onclick="selectColor(${i}, '#ffffff', this)"></div>
+                                </div>
 
-            <div class="question-slide" id="slide2">
-                <h1 class="question-title">2. ¿Qué cambia entre la primera y la segunda caída?</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey2" onclick="setMode(2, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw2" onclick="setMode(2, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette2">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(2, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(2, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(2, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(2, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(2, '#ffffff', this)"></div>
-                    </div>
-
-                    <button class="btn-clear" id="btnClear2" onclick="clearLocalCanvas(2)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace2">
-                    <textarea class="text-answer" id="text2" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas2"></canvas>
-                </div>
-            </div>
-
-            <div class="question-slide" id="slide3">
-                <h1 class="question-title">3. La plastilina se deforma más sobre ____________ ¿por qué?</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey3" onclick="setMode(3, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw3" onclick="setMode(3, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette3">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(3, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(3, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(3, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(3, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(3, '#ffffff', this)"></div>
-                    </div>
-
-                    <button class="btn-clear" id="btnClear3" onclick="clearLocalCanvas(3)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace3">
-                    <textarea class="text-answer" id="text3" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas3"></canvas>
-                </div>
-            </div>
-
-            <div class="question-slide" id="slide4">
-                <h1 class="question-title">4. Dibuja la esfera como quedó después de la caída sobre la mesa</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey4" onclick="setMode(4, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw4" onclick="setMode(4, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette4">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(4, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(4, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(4, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(4, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(4, '#ffffff', this)"></div>
-                    </div>
-
-                    <button class="btn-clear" id="btnClear4" onclick="clearLocalCanvas(4)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace4">
-                    <textarea class="text-answer" id="text4" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas4"></canvas>
-                </div>
-            </div>
-
-            <div class="question-slide" id="slide5">
-                <h1 class="question-title">5. Dibuja la esfera como quedó después de la caída sobre la esponja</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey5" onclick="setMode(5, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw5" onclick="setMode(5, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette5">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(5, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(5, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(5, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(5, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(5, '#ffffff', this)"></div>
-                    </div>
-
-                    <button class="btn-clear" id="btnClear5" onclick="clearLocalCanvas(5)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace5">
-                    <textarea class="text-answer" id="text5" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas5"></canvas>
-                </div>
-            </div>
-
-            <div class="question-slide" id="slide6">
-                <h1 class="question-title">6. ¿Qué pasa si lanzo la bolita de una altura de 10 cm?</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey6" onclick="setMode(6, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw6" onclick="setMode(6, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette6">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(6, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(6, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(6, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(6, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(6, '#ffffff', this)"></div>
-                    </div>
-
-                    <button class="btn-clear" id="btnClear6" onclick="clearLocalCanvas(6)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace6">
-                    <textarea class="text-answer" id="text6" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas6"></canvas>
-                </div>
-            </div>
-
-            <div class="question-slide" id="slide7">
-                <h1 class="question-title">7. ¿Qué pasa si lanzo la bolita de una altura de 30 cm?</h1>
-                <div class="toolbar">
-                    <button class="tool-btn active" id="btnKey7" onclick="setMode(7, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" id="btnDraw7" onclick="setMode(7, 'draw')">✎ Pizarra</button>
-                    
-                    <div class="color-palette" id="palette7">
-                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(7, '#00ff00', this)"></div>
-                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(7, '#ffcc00', this)"></div>
-                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(7, '#ff0000', this)"></div>
-                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(7, '#00ffff', this)"></div>
-                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(7, '#ffffff', this)"></div>
-                    </div>
-
-                    <button class="btn-clear" id="btnClear7" onclick="clearLocalCanvas(7)">🗑️ Borrar Pizarra</button>
-                </div>
-                <div class="workspace read-only" id="workspace7">
-                    <textarea class="text-answer" id="text7" placeholder="Esperando interacción..." disabled></textarea>
-                    <canvas class="draw-canvas" id="canvas7"></canvas>
-                </div>
-            </div>
+                                <button class="btn-clear" id="btnClear${i}" onclick="clearLocalCanvas(${i})">🗑️ Borrar Pizarra</button>
+                            </div>
+                            <div class="workspace read-only" id="workspace${i}">
+                                <textarea class="text-answer" id="text${i}" placeholder="Esperando interacción..." disabled></textarea>
+                                <canvas class="draw-canvas" id="canvas${i}"></canvas>
+                            </div>
+                        </div>
+                    `);
+                });
+            </script>
 
             <div class="nav-bar">
                 <button class="nav-btn" id="btnPrev" onclick="changeSlide(-1)" disabled>◀ Anterior</button>
