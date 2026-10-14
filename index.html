@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neón RYG · Preguntas Interactivas</title>
+    <title>Neón RYG · Preguntas e Interacción</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -62,7 +62,7 @@
             box-shadow: 0 0 12px #00ff00;
         }
 
-        /* MODAL DE INGRESO UNIFICADO */
+        /* MODAL DE BIENVENIDA / ROL */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -89,7 +89,6 @@
             letter-spacing: 2px;
         }
 
-        /* SELECTOR DE ROL */
         .role-selector {
             display: flex;
             gap: 0.5rem;
@@ -156,7 +155,79 @@
             box-shadow: 0 0 30px #00ff00;
         }
 
-        /* CONTENEDOR PRINCIPAL */
+        /* VISTA PANEL PROFESOR */
+        .teacher-view {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            background: #161b22;
+            border: 3px solid #ffcc00;
+            box-shadow: 0 0 25px #ffcc00, 0 0 50px #ff0000;
+            border-radius: 1.5rem;
+            padding: 2rem;
+        }
+        .teacher-view h1 {
+            color: #ffcc00;
+            border-bottom: 2px solid #30363d;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .student-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #8b949e;
+        }
+        .status-dot.online { background: #3fb950; }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #30363d;
+            transition: .3s;
+            border-radius: 26px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #238636; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* VISTA ESTUDIANTE (PREGUNTAS) */
         .slide-container { position: relative; width: 100%; max-width: 1200px; margin-top: 1rem; }
         .neon-box {
             position: relative;
@@ -283,7 +354,7 @@
 </head>
 <body>
 
-    <!-- MODAL DE INGRESO CON SELECCIÓN DE ROL -->
+    <!-- MODAL DE INGRESO UNIFICADO -->
     <div class="modal-overlay" id="loginModal">
         <div class="login-card">
             <h2>¡BIENVENIDO!</h2>
@@ -303,7 +374,6 @@
                 <input type="text" id="roomCode" placeholder="Ej: FISICA-3A" value="FISICA-3A">
             </div>
 
-            <!-- CAMPO OCULTO QUE SOLO APARECE PARA PROFESORES -->
             <div class="input-group" id="passGroup" style="display: none;">
                 <label for="userPassword">Contraseña Docente:</label>
                 <input type="password" id="userPassword" placeholder="Ingresa tu contraseña">
@@ -313,14 +383,25 @@
         </div>
     </div>
 
-    <div class="slide-container">
+    <!-- VISTA PANEL PROFESOR (DENTRO DEL MISMO HTML) -->
+    <div class="teacher-view" id="teacherView">
+        <h1>
+            <span>👨‍🏫 Control del Profesor</span>
+            <span style="font-size: 0.9rem; color: #3fb950;" id="activeRoomTag">🟢 SALA: FISICA-3A</span>
+        </h1>
+        <div id="studentList">
+            <p style="color: #8b949e;">Esperando a que ingresen los estudiantes...</p>
+        </div>
+    </div>
+
+    <!-- VISTA ESTUDIANTIL (PREGUNTAS) -->
+    <div class="slide-container" id="studentView" style="display: none;">
         <div class="profe-logo">PROFE</div>
         
         <div class="neon-box">
             <div class="permission-banner locked" id="permBanner">🔒 MODO LECTURA</div>
             <div class="slide-indicator" id="slideIndicator">PREGUNTA 1 DE 7</div>
 
-            <!-- PREGUNTAS DEL EXPERIMENTO -->
             <div class="question-slide active" id="slide1">
                 <h1 class="question-title">1. ¿Qué se mantiene igual en las dos caídas?</h1>
                 <div class="toolbar">
@@ -413,6 +494,7 @@
     </div>
 
     <script>
+        // CONFIGURACIÓN DE TU BASE DE DATOS DE FIREBASE
         const firebaseConfig = {
             databaseURL: "https://proyecto-experimento-caida-default-rtdb.firebaseio.com"
         };
@@ -426,7 +508,6 @@
         let currentSlide = 1;
         const totalSlides = 7;
 
-        // CAMBIAR ROL EN EL FORMULARIO
         function selectRole(role) {
             currentRole = role;
             const studentBtn = document.getElementById('roleStudentBtn');
@@ -444,44 +525,52 @@
             }
         }
 
-        // PROCESAR INGRESO
         function handleLogin() {
             const name = document.getElementById('userName').value.trim();
             roomCode = document.getElementById('roomCode').value.trim().toUpperCase().replace(/\s+/g, '-');
             const pass = document.getElementById('userPassword').value;
 
             if (!name || !roomCode) {
-                alert("Ingresa tu nombre y el código de sala.");
+                alert("Por favor ingresa tu nombre y el código de sala.");
                 return;
             }
 
+            document.getElementById('loginModal').style.display = 'none';
+
             if (currentRole === 'teacher') {
                 if (pass === "mejia") {
-                    // Redirigir al panel del profesor guardando la sala en la URL
-                    window.location.href = `profesor.html?sala=${roomCode}`;
+                    // Mostrar panel de profesor dentro del mismo HTML
+                    document.getElementById('teacherView').style.display = 'block';
+                    document.getElementById('activeRoomTag').textContent = `🟢 SALA: ${roomCode}`;
+                    initTeacherPanel(roomCode);
                 } else {
                     alert("Contraseña de profesor incorrecta.");
+                    document.getElementById('loginModal').style.display = 'flex';
                 }
             } else {
-                // Flujo normal de estudiante
-                studentId = 'std_' + Date.now();
-                const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
-
-                studentRef.set({
-                    name: name,
-                    canWrite: false,
-                    online: true
-                });
-
-                studentRef.onDisconnect().update({ online: false });
-
-                studentRef.child('canWrite').on('value', (snapshot) => {
-                    canWrite = snapshot.val() || false;
-                    updatePermissionsUI();
-                });
-
-                document.getElementById('loginModal').style.display = 'none';
+                // Mostrar vista de estudiante
+                document.getElementById('studentView').style.display = 'block';
+                initStudentSession(name, roomCode);
             }
+        }
+
+        // --- LÓGICA ESTUDIANTE ---
+        function initStudentSession(name, roomCode) {
+            studentId = 'std_' + Date.now();
+            const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
+
+            studentRef.set({
+                name: name,
+                canWrite: false,
+                online: true
+            });
+
+            studentRef.onDisconnect().update({ online: false });
+
+            studentRef.child('canWrite').on('value', (snapshot) => {
+                canWrite = snapshot.val() || false;
+                updatePermissionsUI();
+            });
         }
 
         function updatePermissionsUI() {
@@ -505,6 +594,51 @@
             }
         }
 
+        // --- LÓGICA PROFESOR ---
+        function initTeacherPanel(roomCode) {
+            const roomRef = db.ref(`rooms/${roomCode}/students`);
+            roomRef.on('value', (snapshot) => {
+                const students = snapshot.val() || {};
+                renderStudentsForTeacher(students, roomCode);
+            });
+        }
+
+        function renderStudentsForTeacher(students, roomCode) {
+            const listContainer = document.getElementById('studentList');
+            listContainer.innerHTML = '';
+
+            const keys = Object.keys(students);
+            if (keys.length === 0) {
+                listContainer.innerHTML = `<p style="color: #8b949e;">No hay estudiantes conectados en la sala <strong>${roomCode}</strong>.</p>`;
+                return;
+            }
+
+            keys.forEach(id => {
+                const student = students[id];
+                const card = document.createElement('div');
+                card.className = 'student-card';
+
+                card.innerHTML = `
+                    <div class="student-info">
+                        <span class="status-dot ${student.online ? 'online' : ''}"></span>
+                        <strong style="font-size: 1.1rem; color: #fff;">${student.name}</strong>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" ${student.canWrite ? 'checked' : ''} onchange="togglePermission('${roomCode}', '${id}', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        function togglePermission(roomCode, studentId, canWrite) {
+            db.ref(`rooms/${roomCode}/students/${studentId}`).update({
+                canWrite: canWrite
+            });
+        }
+
+        // --- NAVEGACIÓN DE PREGUNTAS ---
         function changeSlide(dir) {
             document.getElementById(`slide${currentSlide}`).classList.remove('active');
             currentSlide += dir;
