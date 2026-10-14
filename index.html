@@ -18,43 +18,47 @@
             color: #fff;
         }
 
+        /* 1. LOGO PROFE CON ALTO CONTRASTE Y MEJOR VISIBILIDAD */
         .profe-logo {
             position: absolute;
-            top: -1.8rem;
-            left: 2.5rem;
-            font-size: 1.8rem;
+            top: -2.2rem;
+            left: 1.5rem;
+            font-size: 2rem;
             font-weight: 900;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            background: linear-gradient(135deg, #fff2a3 0%, #ffd700 50%, #cca100 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 25px rgba(218, 165, 32, 0.4);
-            z-index: 25;
+            color: #ffd700;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 0.3rem 1rem;
+            border-radius: 0.8rem;
+            border: 2px solid #ffd700;
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            z-index: 30;
             user-select: none;
         }
 
+        /* 2. CARTEL DE ESTADO REUBICADO PARA NO TRASLAPARSE */
         .permission-banner {
             position: absolute;
-            top: -1.3rem;
-            right: 2.5rem;
-            padding: 0.4rem 1.2rem;
-            border-radius: 1rem;
-            font-size: 0.8rem;
+            top: -2.2rem;
+            right: 1.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 0.8rem;
+            font-size: 0.85rem;
             font-weight: bold;
             letter-spacing: 1px;
             text-transform: uppercase;
-            z-index: 20;
+            z-index: 30;
             transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.85);
         }
         .permission-banner.locked {
-            background: rgba(255, 0, 0, 0.25);
             border: 2px solid #ff0000;
             color: #ff4d4d;
             box-shadow: 0 0 12px #ff0000;
         }
         .permission-banner.unlocked {
-            background: rgba(0, 255, 0, 0.25);
             border: 2px solid #00ff00;
             color: #00ff00;
             box-shadow: 0 0 12px #00ff00;
@@ -225,7 +229,7 @@
         input:checked + .slider:before { transform: translateX(24px); }
 
         /* VISTA ESTUDIANTE */
-        .slide-container { position: relative; width: 100%; max-width: 1200px; margin-top: 1rem; }
+        .slide-container { position: relative; width: 100%; max-width: 1200px; margin-top: 1.5rem; }
         .neon-box {
             position: relative;
             width: 100%;
@@ -259,6 +263,7 @@
             color: #ffffff;
             text-shadow: 0 0 8px #ffcc00, 0 0 18px #ff0000;
             text-align: center;
+            margin-top: 0.5rem;
             margin-bottom: 1rem;
             padding-bottom: 0.8rem;
             border-bottom: 2px solid rgba(255, 204, 0, 0.6);
@@ -291,7 +296,7 @@
             border: 2px dashed rgba(255, 204, 0, 0.5);
             background: rgba(15, 15, 5, 0.4);
             overflow: hidden;
-            min-height: 250px;
+            min-height: 280px;
         }
         .question-slide { display: none; flex-direction: column; flex: 1; height: 100%; }
         .question-slide.active { display: flex; }
@@ -320,6 +325,7 @@
             display: none;
             cursor: crosshair;
             touch-action: none;
+            z-index: 10;
         }
         .workspace.draw-mode .text-answer { display: none; }
         .workspace.draw-mode .draw-canvas { display: block; }
@@ -345,7 +351,6 @@
         .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     </style>
 
-    <!-- SDKs de Firebase v9 Compat -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
@@ -391,7 +396,7 @@
         </div>
     </div>
 
-    <!-- VISTA ESTUDIANTE (PREGUNTAS) -->
+    <!-- VISTA ESTUDIANTE -->
     <div class="slide-container" id="studentView" style="display: none;">
         <div class="profe-logo">PROFE</div>
         
@@ -402,8 +407,8 @@
             <div class="question-slide active" id="slide1">
                 <h1 class="question-title">1. ¿Qué se mantiene igual en las dos caídas?</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(1, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(1, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey1" onclick="setMode(1, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw1" onclick="setMode(1, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace1">
                     <textarea class="text-answer" id="text1" placeholder="Escribe tu respuesta..." disabled></textarea>
@@ -414,8 +419,8 @@
             <div class="question-slide" id="slide2">
                 <h1 class="question-title">2. ¿Qué cambia entre la primera y la segunda caída?</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(2, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(2, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey2" onclick="setMode(2, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw2" onclick="setMode(2, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace2">
                     <textarea class="text-answer" id="text2" placeholder="Escribe tu respuesta..." disabled></textarea>
@@ -426,8 +431,8 @@
             <div class="question-slide" id="slide3">
                 <h1 class="question-title">3. La plastilina se deforma más sobre ____________ ¿por qué?</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(3, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(3, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey3" onclick="setMode(3, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw3" onclick="setMode(3, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace3">
                     <textarea class="text-answer" id="text3" placeholder="Escribe tu respuesta..." disabled></textarea>
@@ -438,8 +443,8 @@
             <div class="question-slide" id="slide4">
                 <h1 class="question-title">4. Dibuja la esfera como quedó después de la caída sobre la mesa</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(4, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(4, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey4" onclick="setMode(4, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw4" onclick="setMode(4, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace4">
                     <textarea class="text-answer" id="text4" placeholder="Describe aquí..." disabled></textarea>
@@ -450,8 +455,8 @@
             <div class="question-slide" id="slide5">
                 <h1 class="question-title">5. Dibuja la esfera como quedó después de la caída sobre la esponja</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(5, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(5, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey5" onclick="setMode(5, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw5" onclick="setMode(5, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace5">
                     <textarea class="text-answer" id="text5" placeholder="Describe aquí..." disabled></textarea>
@@ -462,8 +467,8 @@
             <div class="question-slide" id="slide6">
                 <h1 class="question-title">6. ¿Qué pasa si lanzo la bolita de una altura de 10 cm?</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(6, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(6, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey6" onclick="setMode(6, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw6" onclick="setMode(6, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace6">
                     <textarea class="text-answer" id="text6" placeholder="Escribe tu respuesta..." disabled></textarea>
@@ -474,8 +479,8 @@
             <div class="question-slide" id="slide7">
                 <h1 class="question-title">7. ¿Qué pasa si lanzo la bolita de una altura de 30 cm?</h1>
                 <div class="toolbar">
-                    <button class="tool-btn active" onclick="setMode(7, 'keyboard')">⌨ Teclado</button>
-                    <button class="tool-btn" onclick="setMode(7, 'draw')">✎ Pizarra</button>
+                    <button class="tool-btn active" id="btnKey7" onclick="setMode(7, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" id="btnDraw7" onclick="setMode(7, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace7">
                     <textarea class="text-answer" id="text7" placeholder="Escribe tu respuesta..." disabled></textarea>
@@ -491,7 +496,6 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN OFICIAL DE TU PROYECTO "caida-5d67a"
         const firebaseConfig = {
             apiKey: "AIzaSyB3nHZf5TDhJolWch-WZnQXDzsMP4rDpVM",
             authDomain: "caida-5d67a.firebaseapp.com",
@@ -552,10 +556,10 @@
             } else {
                 document.getElementById('studentView').style.display = 'block';
                 initStudentSession(name, roomCode);
+                setTimeout(resizeCanvases, 300);
             }
         }
 
-        // --- LÓGICA ESTUDIANTE ---
         function initStudentSession(name, roomCode) {
             studentId = 'std_' + Date.now();
             const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
@@ -568,7 +572,6 @@
 
             studentRef.onDisconnect().update({ online: false });
 
-            // Escuchar cambios del permiso de escritura
             studentRef.child('canWrite').on('value', (snapshot) => {
                 canWrite = snapshot.val() || false;
                 updatePermissionsUI();
@@ -596,7 +599,6 @@
             }
         }
 
-        // --- LÓGICA PROFESOR ---
         function initTeacherPanel(roomCode) {
             const roomRef = db.ref(`rooms/${roomCode}/students`);
             roomRef.on('value', (snapshot) => {
@@ -640,7 +642,6 @@
             });
         }
 
-        // --- NAVEGACIÓN ---
         function changeSlide(dir) {
             document.getElementById(`slide${currentSlide}`).classList.remove('active');
             currentSlide += dir;
@@ -648,13 +649,42 @@
             document.getElementById('slideIndicator').textContent = `PREGUNTA ${currentSlide} DE ${totalSlides}`;
             document.getElementById('btnPrev').disabled = currentSlide === 1;
             document.getElementById('btnNext').disabled = currentSlide === totalSlides;
+            
+            setTimeout(() => { resizeCanvas(currentSlide); }, 100);
         }
 
         function setMode(slideNum, mode) {
             const ws = document.getElementById(`workspace${slideNum}`);
-            if (mode === 'draw') ws.classList.add('draw-mode');
-            else ws.classList.remove('draw-mode');
+            const btnKey = document.getElementById(`btnKey${slideNum}`);
+            const btnDraw = document.getElementById(`btnDraw${slideNum}`);
+
+            if (mode === 'draw') {
+                ws.classList.add('draw-mode');
+                btnDraw.classList.add('active');
+                btnKey.classList.remove('active');
+                resizeCanvas(slideNum);
+            } else {
+                ws.classList.remove('draw-mode');
+                btnKey.classList.add('active');
+                btnDraw.classList.remove('active');
+            }
         }
+
+        // --- 3. PIZARRA HA DIBUJO APARTADO (CANVAS) ---
+        function resizeCanvas(i) {
+            const canvas = document.getElementById(`canvas${i}`);
+            if (canvas && canvas.parentElement) {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+        }
+
+        function resizeCanvases() {
+            for (let i = 1; i <= totalSlides; i++) {
+                resizeCanvas(i);
+            }
+        }
+        window.addEventListener('resize', resizeCanvases);
 
         for (let i = 1; i <= totalSlides; i++) {
             const canvas = document.getElementById(`canvas${i}`);
@@ -662,24 +692,49 @@
             const ctx = canvas.getContext('2d');
             let drawing = false;
 
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
 
-            canvas.addEventListener('mousedown', (e) => {
+            function startDraw(e) {
                 if (!canWrite) return;
                 drawing = true;
+                const pos = getPos(e);
                 ctx.beginPath();
-                ctx.moveTo(e.offsetX, e.offsetY);
-            });
-            canvas.addEventListener('mousemove', (e) => {
-                if (drawing && canWrite) {
-                    ctx.lineTo(e.offsetX, e.offsetY);
-                    ctx.strokeStyle = '#00ff00';
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                }
-            });
-            canvas.addEventListener('mouseup', () => drawing = false);
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!drawing || !canWrite) return;
+                e.preventDefault();
+                const pos = getPos(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.strokeStyle = '#00ff00';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                drawing = false;
+            }
+
+            // Mouse Events
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseleave', stopDraw);
+
+            // Touch Events (Móviles y Tablets)
+            canvas.addEventListener('touchstart', startDraw);
+            canvas.addEventListener('touchmove', draw);
+            canvas.addEventListener('touchend', stopDraw);
         }
     </script>
 </body>
