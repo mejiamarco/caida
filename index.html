@@ -62,7 +62,7 @@
             box-shadow: 0 0 12px #00ff00;
         }
 
-        /* MODAL DE BIENVENIDA / ROL */
+        /* MODAL DE INGRESO UNIFICADO */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -371,7 +371,7 @@
 
             <div class="input-group">
                 <label for="roomCode">Nombre o Código de Sala:</label>
-                <input type="text" id="roomCode" placeholder="Ej: FISICA-3A" value="FISICA-3A">
+                <input type="text" id="roomCode" placeholder="Ej: QUIMI" value="QUIMI">
             </div>
 
             <div class="input-group" id="passGroup" style="display: none;">
@@ -383,18 +383,18 @@
         </div>
     </div>
 
-    <!-- VISTA PANEL PROFESOR (DENTRO DEL MISMO HTML) -->
+    <!-- VISTA PANEL PROFESOR -->
     <div class="teacher-view" id="teacherView">
         <h1>
             <span>👨‍🏫 Control del Profesor</span>
-            <span style="font-size: 0.9rem; color: #3fb950;" id="activeRoomTag">🟢 SALA: FISICA-3A</span>
+            <span style="font-size: 0.9rem; color: #3fb950;" id="activeRoomTag">🟢 SALA: QUIMI</span>
         </h1>
         <div id="studentList">
-            <p style="color: #8b949e;">Esperando a que ingresen los estudiantes...</p>
+            <p style="color: #8b949e;">Conectando a la sala...</p>
         </div>
     </div>
 
-    <!-- VISTA ESTUDIANTIL (PREGUNTAS) -->
+    <!-- VISTA ESTUDIANTE (PREGUNTAS) -->
     <div class="slide-container" id="studentView" style="display: none;">
         <div class="profe-logo">PROFE</div>
         
@@ -494,9 +494,15 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE TU BASE DE DATOS DE FIREBASE
+        // CONFIGURACIÓN COMPLETA DE FIREBASE REALTIME DATABASE
         const firebaseConfig = {
-            databaseURL: "https://proyecto-experimento-caida-default-rtdb.firebaseio.com"
+            apiKey: "AIzaSyDummyKeyForRealtimeDatabaseInit12345",
+            authDomain: "proyecto-experimento-caida.firebaseapp.com",
+            databaseURL: "https://proyecto-experimento-caida-default-rtdb.firebaseio.com",
+            projectId: "proyecto-experimento-caida",
+            storageBucket: "proyecto-experimento-caida.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -539,7 +545,6 @@
 
             if (currentRole === 'teacher') {
                 if (pass === "mejia") {
-                    // Mostrar panel de profesor dentro del mismo HTML
                     document.getElementById('teacherView').style.display = 'block';
                     document.getElementById('activeRoomTag').textContent = `🟢 SALA: ${roomCode}`;
                     initTeacherPanel(roomCode);
@@ -548,7 +553,6 @@
                     document.getElementById('loginModal').style.display = 'flex';
                 }
             } else {
-                // Mostrar vista de estudiante
                 document.getElementById('studentView').style.display = 'block';
                 initStudentSession(name, roomCode);
             }
@@ -638,7 +642,7 @@
             });
         }
 
-        // --- NAVEGACIÓN DE PREGUNTAS ---
+        // --- NAVEGACIÓN ---
         function changeSlide(dir) {
             document.getElementById(`slide${currentSlide}`).classList.remove('active');
             currentSlide += dir;
