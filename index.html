@@ -33,6 +33,11 @@
             text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 25px rgba(218, 165, 32, 0.4);
             z-index: 25;
             user-select: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .profe-logo:hover {
+            transform: scale(1.05);
         }
 
         /* BANNER DE ESTADO DE PERMISO */
@@ -62,7 +67,7 @@
             box-shadow: 0 0 12px #00ff00;
         }
 
-        /* MODAL DE BIENVENIDA */
+        /* MODALES */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -81,6 +86,7 @@
             width: 90%;
             max-width: 420px;
             text-align: center;
+            position: relative;
         }
         .login-card h2 {
             color: #ffcc00;
@@ -108,7 +114,7 @@
             font-size: 1rem;
             outline: none;
         }
-        .btn-join {
+        .btn-action {
             width: 100%;
             padding: 0.9rem;
             border-radius: 1rem;
@@ -120,11 +126,32 @@
             cursor: pointer;
             box-shadow: 0 0 15px #00ff00;
             transition: all 0.25s ease;
+            margin-top: 0.5rem;
         }
-        .btn-join:hover {
+        .btn-action:hover {
             background: #00ff00;
             color: #000;
             box-shadow: 0 0 30px #00ff00;
+        }
+        .btn-teacher-link {
+            background: transparent;
+            border: none;
+            color: #ffe680;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 1rem;
+            display: inline-block;
+        }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.2rem;
+            background: transparent;
+            border: none;
+            color: #ff4d4d;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* CONTENEDOR PRINCIPAL */
@@ -264,7 +291,7 @@
 </head>
 <body>
 
-    <!-- MODAL DE BIENVENIDA -->
+    <!-- MODAL DE BIENVENIDA ESTUDIANTE -->
     <div class="modal-overlay" id="loginModal">
         <div class="login-card">
             <h2>¡BIENVENIDO!</h2>
@@ -276,14 +303,29 @@
                 <label for="roomCode">Código de Sala:</label>
                 <input type="text" id="roomCode" placeholder="Ej: FISICA101" value="FISICA101">
             </div>
-            <button class="btn-join" id="btnJoin">Ingresar a la Sesión</button>
+            <button class="btn-action" id="btnJoin">Ingresar como Estudiante</button>
+            <br>
+            <button class="btn-teacher-link" onclick="openTeacherModal()">¿Eres el Profesor? Haz clic aquí</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE ACCESO PARA PROFESOR -->
+    <div class="modal-overlay" id="teacherModal" style="display: none;">
+        <div class="login-card">
+            <button class="close-btn" onclick="closeTeacherModal()">×</button>
+            <h2>ACCESO DOCENTE</h2>
+            <div class="input-group">
+                <label for="teacherPassword">Contraseña de Profesor:</label>
+                <input type="password" id="teacherPassword" placeholder="Ingresa tu clave">
+            </div>
+            <button class="btn-action" id="btnTeacherLogin">Acceder al Panel</button>
         </div>
     </div>
 
     <!-- CONTENEDOR PRINCIPAL -->
     <div class="slide-container">
-        <!-- LOGO PROFE DORADO -->
-        <div class="profe-logo">PROFE</div>
+        <!-- LOGO PROFE DORADO INTERACTIVO -->
+        <div class="profe-logo" onclick="openTeacherModal()" title="Acceso de Profesor">PROFE</div>
         
         <div class="neon-box">
             <div class="permission-banner locked" id="permBanner">🔒 MODO LECTURA</div>
@@ -388,7 +430,7 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN REAL INTEGRADA
+        // CONFIGURACIÓN DE FIREBASE INTEGRADA
         const firebaseConfig = {
             apiKey: "AIzaSyCaidaLibreKey1234567890abcdef",
             authDomain: "proyecto-experimento-caida.firebaseapp.com",
@@ -407,6 +449,7 @@
         let currentSlide = 1;
         const totalSlides = 7;
 
+        // ACCESO DE ESTUDIANTE
         document.getElementById('btnJoin').addEventListener('click', () => {
             const name = document.getElementById('studentName').value.trim();
             roomCode = document.getElementById('roomCode').value.trim().toUpperCase() || "FISICA101";
@@ -433,6 +476,23 @@
             });
 
             document.getElementById('loginModal').style.display = 'none';
+        });
+
+        // ACCESO DE PROFESOR CON CONTRASEÑA "mejia"
+        function openTeacherModal() {
+            document.getElementById('teacherModal').style.display = 'flex';
+        }
+        function closeTeacherModal() {
+            document.getElementById('teacherModal').style.display = 'none';
+        }
+
+        document.getElementById('btnTeacherLogin').addEventListener('click', () => {
+            const pass = document.getElementById('teacherPassword').value;
+            if (pass === "mejia") {
+                window.location.href = "profesor.html";
+            } else {
+                alert("Contraseña incorrecta.");
+            }
         });
 
         function updatePermissionsUI() {
