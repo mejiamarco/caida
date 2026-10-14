@@ -33,11 +33,6 @@
             text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 25px rgba(218, 165, 32, 0.4);
             z-index: 25;
             user-select: none;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        .profe-logo:hover {
-            transform: scale(1.05);
         }
 
         /* BANNER DE ESTADO DE PERMISO */
@@ -67,7 +62,7 @@
             box-shadow: 0 0 12px #00ff00;
         }
 
-        /* MODALES */
+        /* MODAL DE INGRESO UNIFICADO */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -86,14 +81,41 @@
             width: 90%;
             max-width: 420px;
             text-align: center;
-            position: relative;
         }
         .login-card h2 {
             color: #ffcc00;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             text-shadow: 0 0 10px #ff0000;
             letter-spacing: 2px;
         }
+
+        /* SELECTOR DE ROL */
+        .role-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: #1a1a1a;
+            padding: 0.3rem;
+            border-radius: 0.8rem;
+            border: 1px solid #ffcc00;
+        }
+        .role-btn {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            background: transparent;
+            color: #ffe680;
+            font-weight: bold;
+            border-radius: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .role-btn.active {
+            background: #ffcc00;
+            color: #000;
+            box-shadow: 0 0 10px #ffcc00;
+        }
+
         .input-group {
             margin-bottom: 1.2rem;
             text-align: left;
@@ -132,26 +154,6 @@
             background: #00ff00;
             color: #000;
             box-shadow: 0 0 30px #00ff00;
-        }
-        .btn-teacher-link {
-            background: transparent;
-            border: none;
-            color: #ffe680;
-            font-size: 0.85rem;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 1rem;
-            display: inline-block;
-        }
-        .close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1.2rem;
-            background: transparent;
-            border: none;
-            color: #ff4d4d;
-            font-size: 1.5rem;
-            cursor: pointer;
         }
 
         /* CONTENEDOR PRINCIPAL */
@@ -212,10 +214,7 @@
             text-transform: uppercase;
             font-weight: bold;
         }
-        .tool-btn.active {
-            background: #ffcc00;
-            color: #1a1200;
-        }
+        .tool-btn.active { background: #ffcc00; color: #1a1200; }
 
         .workspace {
             flex: 1;
@@ -243,10 +242,7 @@
             color: #f0ffe0;
             font-family: inherit;
         }
-        .text-answer:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+        .text-answer:disabled { cursor: not-allowed; opacity: 0.6; }
 
         .draw-canvas {
             position: absolute;
@@ -259,11 +255,7 @@
         }
         .workspace.draw-mode .text-answer { display: none; }
         .workspace.draw-mode .draw-canvas { display: block; }
-
-        .workspace.read-only .draw-canvas {
-            pointer-events: none;
-            cursor: not-allowed;
-        }
+        .workspace.read-only .draw-canvas { pointer-events: none; cursor: not-allowed; }
 
         .nav-bar {
             position: absolute;
@@ -291,47 +283,44 @@
 </head>
 <body>
 
-    <!-- MODAL DE BIENVENIDA ESTUDIANTE -->
+    <!-- MODAL DE INGRESO CON SELECCIÓN DE ROL -->
     <div class="modal-overlay" id="loginModal">
         <div class="login-card">
             <h2>¡BIENVENIDO!</h2>
-            <div class="input-group">
-                <label for="studentName">Tu Nombre Completo:</label>
-                <input type="text" id="studentName" placeholder="Ej: Carlos Mamani">
+
+            <div class="role-selector">
+                <button class="role-btn active" id="roleStudentBtn" onclick="selectRole('student')">👨‍🎓 Estudiante</button>
+                <button class="role-btn" id="roleTeacherBtn" onclick="selectRole('teacher')">👨‍🏫 Profesor</button>
             </div>
+
             <div class="input-group">
-                <label for="roomCode">Código de Sala:</label>
-                <input type="text" id="roomCode" placeholder="Ej: FISICA101" value="FISICA101">
+                <label for="userName">Tu Nombre Completo:</label>
+                <input type="text" id="userName" placeholder="Ej: Carlos Mamani">
             </div>
-            <button class="btn-action" id="btnJoin">Ingresar como Estudiante</button>
-            <br>
-            <button class="btn-teacher-link" onclick="openTeacherModal()">¿Eres el Profesor? Haz clic aquí</button>
+
+            <div class="input-group">
+                <label for="roomCode">Nombre o Código de Sala:</label>
+                <input type="text" id="roomCode" placeholder="Ej: FISICA-3A" value="FISICA-3A">
+            </div>
+
+            <!-- CAMPO OCULTO QUE SOLO APARECE PARA PROFESORES -->
+            <div class="input-group" id="passGroup" style="display: none;">
+                <label for="userPassword">Contraseña Docente:</label>
+                <input type="password" id="userPassword" placeholder="Ingresa tu contraseña">
+            </div>
+
+            <button class="btn-action" id="btnSubmit" onclick="handleLogin()">Ingresar a la Sala</button>
         </div>
     </div>
 
-    <!-- MODAL DE ACCESO PARA PROFESOR -->
-    <div class="modal-overlay" id="teacherModal" style="display: none;">
-        <div class="login-card">
-            <button class="close-btn" onclick="closeTeacherModal()">×</button>
-            <h2>ACCESO DOCENTE</h2>
-            <div class="input-group">
-                <label for="teacherPassword">Contraseña de Profesor:</label>
-                <input type="password" id="teacherPassword" placeholder="Ingresa tu clave">
-            </div>
-            <button class="btn-action" id="btnTeacherLogin">Acceder al Panel</button>
-        </div>
-    </div>
-
-    <!-- CONTENEDOR PRINCIPAL -->
     <div class="slide-container">
-        <!-- LOGO PROFE DORADO INTERACTIVO -->
-        <div class="profe-logo" onclick="openTeacherModal()" title="Acceso de Profesor">PROFE</div>
+        <div class="profe-logo">PROFE</div>
         
         <div class="neon-box">
             <div class="permission-banner locked" id="permBanner">🔒 MODO LECTURA</div>
             <div class="slide-indicator" id="slideIndicator">PREGUNTA 1 DE 7</div>
 
-            <!-- SLIDE 1 -->
+            <!-- PREGUNTAS DEL EXPERIMENTO -->
             <div class="question-slide active" id="slide1">
                 <h1 class="question-title">1. ¿Qué se mantiene igual en las dos caídas?</h1>
                 <div class="toolbar">
@@ -344,7 +333,6 @@
                 </div>
             </div>
 
-            <!-- SLIDE 2 -->
             <div class="question-slide" id="slide2">
                 <h1 class="question-title">2. ¿Qué cambia entre la primera y la segunda caída?</h1>
                 <div class="toolbar">
@@ -357,7 +345,6 @@
                 </div>
             </div>
 
-            <!-- SLIDE 3 -->
             <div class="question-slide" id="slide3">
                 <h1 class="question-title">3. La plastilina se deforma más sobre ____________ ¿por qué?</h1>
                 <div class="toolbar">
@@ -370,7 +357,6 @@
                 </div>
             </div>
 
-            <!-- SLIDE 4 -->
             <div class="question-slide" id="slide4">
                 <h1 class="question-title">4. Dibuja la esfera como quedó después de la caída sobre la mesa</h1>
                 <div class="toolbar">
@@ -383,7 +369,6 @@
                 </div>
             </div>
 
-            <!-- SLIDE 5 -->
             <div class="question-slide" id="slide5">
                 <h1 class="question-title">5. Dibuja la esfera como quedó después de la caída sobre la esponja</h1>
                 <div class="toolbar">
@@ -396,7 +381,6 @@
                 </div>
             </div>
 
-            <!-- SLIDE 6 -->
             <div class="question-slide" id="slide6">
                 <h1 class="question-title">6. ¿Qué pasa si lanzo la bolita de una altura de 10 cm?</h1>
                 <div class="toolbar">
@@ -409,7 +393,6 @@
                 </div>
             </div>
 
-            <!-- SLIDE 7 -->
             <div class="question-slide" id="slide7">
                 <h1 class="question-title">7. ¿Qué pasa si lanzo la bolita de una altura de 30 cm?</h1>
                 <div class="toolbar">
@@ -430,85 +413,90 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE FIREBASE INTEGRADA
         const firebaseConfig = {
-            apiKey: "AIzaSyCaidaLibreKey1234567890abcdef",
-            authDomain: "proyecto-experimento-caida.firebaseapp.com",
-            databaseURL: "https://proyecto-experimento-caida-default-rtdb.firebaseio.com",
-            projectId: "proyecto-experimento-caida",
-            storageBucket: "proyecto-experimento-caida.appspot.com",
-            messagingSenderId: "987654321012",
-            appId: "1:987654321012:web:1234567890abcdef"
+            databaseURL: "https://proyecto-experimento-caida-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        let currentRole = 'student';
         let studentId = null;
-        let roomCode = "FISICA101";
+        let roomCode = "";
         let canWrite = false;
         let currentSlide = 1;
         const totalSlides = 7;
 
-        // ACCESO DE ESTUDIANTE
-        document.getElementById('btnJoin').addEventListener('click', () => {
-            const name = document.getElementById('studentName').value.trim();
-            roomCode = document.getElementById('roomCode').value.trim().toUpperCase() || "FISICA101";
+        // CAMBIAR ROL EN EL FORMULARIO
+        function selectRole(role) {
+            currentRole = role;
+            const studentBtn = document.getElementById('roleStudentBtn');
+            const teacherBtn = document.getElementById('roleTeacherBtn');
+            const passGroup = document.getElementById('passGroup');
 
-            if (!name) {
-                alert("Por favor ingresa tu nombre.");
+            if (role === 'student') {
+                studentBtn.classList.add('active');
+                teacherBtn.classList.remove('active');
+                passGroup.style.display = 'none';
+            } else {
+                teacherBtn.classList.add('active');
+                studentBtn.classList.remove('active');
+                passGroup.style.display = 'block';
+            }
+        }
+
+        // PROCESAR INGRESO
+        function handleLogin() {
+            const name = document.getElementById('userName').value.trim();
+            roomCode = document.getElementById('roomCode').value.trim().toUpperCase().replace(/\s+/g, '-');
+            const pass = document.getElementById('userPassword').value;
+
+            if (!name || !roomCode) {
+                alert("Ingresa tu nombre y el código de sala.");
                 return;
             }
 
-            studentId = 'std_' + Date.now();
-            const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
-            
-            studentRef.set({
-                name: name,
-                canWrite: false,
-                online: true
-            });
-
-            studentRef.onDisconnect().update({ online: false });
-
-            studentRef.child('canWrite').on('value', (snapshot) => {
-                canWrite = snapshot.val() || false;
-                updatePermissionsUI();
-            });
-
-            document.getElementById('loginModal').style.display = 'none';
-        });
-
-        // ACCESO DE PROFESOR CON CONTRASEÑA "mejia"
-        function openTeacherModal() {
-            document.getElementById('teacherModal').style.display = 'flex';
-        }
-        function closeTeacherModal() {
-            document.getElementById('teacherModal').style.display = 'none';
-        }
-
-        document.getElementById('btnTeacherLogin').addEventListener('click', () => {
-            const pass = document.getElementById('teacherPassword').value;
-            if (pass === "mejia") {
-                window.location.href = "profesor.html";
+            if (currentRole === 'teacher') {
+                if (pass === "mejia") {
+                    // Redirigir al panel del profesor guardando la sala en la URL
+                    window.location.href = `profesor.html?sala=${roomCode}`;
+                } else {
+                    alert("Contraseña de profesor incorrecta.");
+                }
             } else {
-                alert("Contraseña incorrecta.");
+                // Flujo normal de estudiante
+                studentId = 'std_' + Date.now();
+                const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
+
+                studentRef.set({
+                    name: name,
+                    canWrite: false,
+                    online: true
+                });
+
+                studentRef.onDisconnect().update({ online: false });
+
+                studentRef.child('canWrite').on('value', (snapshot) => {
+                    canWrite = snapshot.val() || false;
+                    updatePermissionsUI();
+                });
+
+                document.getElementById('loginModal').style.display = 'none';
             }
-        });
+        }
 
         function updatePermissionsUI() {
             const banner = document.getElementById('permBanner');
             if (canWrite) {
-                banner.textContent = "✏️ ESCRITURA HABILITADA";
+                banner.textContent = `✏️ HABILITADO (${roomCode})`;
                 banner.className = "permission-banner unlocked";
             } else {
-                banner.textContent = "🔒 MODO LECTURA";
+                banner.textContent = `🔒 LECTURA (${roomCode})`;
                 banner.className = "permission-banner locked";
             }
 
             for (let i = 1; i <= totalSlides; i++) {
                 const ta = document.getElementById(`text${i}`);
                 const ws = document.getElementById(`workspace${i}`);
-
                 if (ta) ta.disabled = !canWrite;
                 if (ws) {
                     if (canWrite) ws.classList.remove('read-only');
@@ -521,7 +509,6 @@
             document.getElementById(`slide${currentSlide}`).classList.remove('active');
             currentSlide += dir;
             document.getElementById(`slide${currentSlide}`).classList.add('active');
-
             document.getElementById('slideIndicator').textContent = `PREGUNTA ${currentSlide} DE ${totalSlides}`;
             document.getElementById('btnPrev').disabled = currentSlide === 1;
             document.getElementById('btnNext').disabled = currentSlide === totalSlides;
