@@ -14,16 +14,17 @@
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
-            padding: 1.5rem;
+            padding: 1rem;
             color: #fff;
+            overflow-x: hidden;
         }
 
-        /* 1. LOGO PROFE CON ALTO CONTRASTE Y MEJOR VISIBILIDAD */
+        /* 1. LOGO PROFE Y PERMISO */
         .profe-logo {
             position: absolute;
             top: -2.2rem;
             left: 1.5rem;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             letter-spacing: 3px;
             text-transform: uppercase;
@@ -38,7 +39,6 @@
             user-select: none;
         }
 
-        /* 2. CARTEL DE ESTADO REUBICADO PARA NO TRASLAPARSE */
         .permission-banner {
             position: absolute;
             top: -2.2rem;
@@ -53,17 +53,10 @@
             transition: all 0.3s ease;
             background: rgba(0, 0, 0, 0.85);
         }
-        .permission-banner.locked {
-            border: 2px solid #ff0000;
-            color: #ff4d4d;
-            box-shadow: 0 0 12px #ff0000;
-        }
-        .permission-banner.unlocked {
-            border: 2px solid #00ff00;
-            color: #00ff00;
-            box-shadow: 0 0 12px #00ff00;
-        }
+        .permission-banner.locked { border: 2px solid #ff0000; color: #ff4d4d; box-shadow: 0 0 12px #ff0000; }
+        .permission-banner.unlocked { border: 2px solid #00ff00; color: #00ff00; box-shadow: 0 0 12px #00ff00; }
 
+        /* MODAL DE BIENVENIDA */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -71,7 +64,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 200;
         }
         .login-card {
             background: rgba(15, 15, 15, 0.95);
@@ -83,272 +76,108 @@
             max-width: 420px;
             text-align: center;
         }
-        .login-card h2 {
-            color: #ffcc00;
-            margin-bottom: 1.2rem;
-            text-shadow: 0 0 10px #ff0000;
-            letter-spacing: 2px;
-        }
+        .login-card h2 { color: #ffcc00; margin-bottom: 1.2rem; text-shadow: 0 0 10px #ff0000; letter-spacing: 2px; }
 
         .role-selector {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            background: #1a1a1a;
-            padding: 0.3rem;
-            border-radius: 0.8rem;
-            border: 1px solid #ffcc00;
+            display: flex; gap: 0.5rem; margin-bottom: 1.5rem; background: #1a1a1a; padding: 0.3rem; border-radius: 0.8rem; border: 1px solid #ffcc00;
         }
         .role-btn {
-            flex: 1;
-            padding: 0.6rem;
-            border: none;
-            background: transparent;
-            color: #ffe680;
-            font-weight: bold;
-            border-radius: 0.6rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            flex: 1; padding: 0.6rem; border: none; background: transparent; color: #ffe680; font-weight: bold; border-radius: 0.6rem; cursor: pointer; transition: all 0.2s ease;
         }
-        .role-btn.active {
-            background: #ffcc00;
-            color: #000;
-            box-shadow: 0 0 10px #ffcc00;
-        }
+        .role-btn.active { background: #ffcc00; color: #000; box-shadow: 0 0 10px #ffcc00; }
 
-        .input-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 0.4rem;
-            color: #ffe680;
-            font-size: 0.9rem;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 0.8rem;
-            border: 2px solid #ffcc00;
-            background: #1a1a1a;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-        }
+        .input-group { margin-bottom: 1.2rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 0.4rem; color: #ffe680; font-size: 0.9rem; }
+        .input-group input { width: 100%; padding: 0.8rem; border-radius: 0.8rem; border: 2px solid #ffcc00; background: #1a1a1a; color: #fff; font-size: 1rem; outline: none; }
+
         .btn-action {
-            width: 100%;
-            padding: 0.9rem;
-            border-radius: 1rem;
-            border: 2px solid #00ff00;
-            background: rgba(0, 255, 0, 0.15);
-            color: #00ff00;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 15px #00ff00;
-            transition: all 0.25s ease;
-            margin-top: 0.5rem;
+            width: 100%; padding: 0.9rem; border-radius: 1rem; border: 2px solid #00ff00; background: rgba(0, 255, 0, 0.15); color: #00ff00; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px #00ff00; transition: all 0.25s ease; margin-top: 0.5rem;
         }
-        .btn-action:hover {
-            background: #00ff00;
-            color: #000;
-            box-shadow: 0 0 30px #00ff00;
-        }
+        .btn-action:hover { background: #00ff00; color: #000; box-shadow: 0 0 30px #00ff00; }
 
-        /* VISTA PANEL PROFESOR */
-        .teacher-view {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            background: #161b22;
-            border: 3px solid #ffcc00;
-            box-shadow: 0 0 25px #ffcc00, 0 0 50px #ff0000;
-            border-radius: 1.5rem;
-            padding: 2rem;
-        }
-        .teacher-view h1 {
-            color: #ffcc00;
-            border-bottom: 2px solid #30363d;
-            padding-bottom: 0.8rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .student-card {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .student-info {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #8b949e;
-        }
-        .status-dot.online { background: #3fb950; }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            inset: 0;
-            background-color: #30363d;
-            transition: .3s;
-            border-radius: 26px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-        input:checked + .slider { background-color: #238636; }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        /* VISTA ESTUDIANTE */
-        .slide-container { position: relative; width: 100%; max-width: 1200px; margin-top: 1.5rem; }
+        /* VISTA ESTUDIANTE / MONITOREO PROFESOR */
+        .slide-container { position: relative; width: 100%; max-width: 1100px; margin-top: 1.5rem; transition: margin-right 0.3s ease; }
         .neon-box {
-            position: relative;
-            width: 100%;
-            min-height: 74vh;
-            background: rgba(0, 0, 0, 0.82);
-            border-radius: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            padding: 2.5rem 2.5rem 4.5rem 2.5rem;
-            border: 5px solid #ff0000;
-            box-shadow: 0 0 15px #ff0000, 0 0 35px #ffcc00, 0 0 70px #00ff00, inset 0 0 25px rgba(255, 0, 0, 0.25);
-            animation: neonRYG 3s infinite alternate;
+            position: relative; width: 100%; min-height: 75vh; background: rgba(0, 0, 0, 0.82); border-radius: 2.5rem; display: flex; flex-direction: column; padding: 2.5rem 2.5rem 4.5rem 2.5rem; border: 5px solid #ff0000; box-shadow: 0 0 15px #ff0000, 0 0 35px #ffcc00, 0 0 70px #00ff00, inset 0 0 25px rgba(255, 0, 0, 0.25); animation: neonRYG 3s infinite alternate;
         }
-        @keyframes neonRYG {
-            0% { border-color: #ff0000; }
-            50% { border-color: #ffcc00; }
-            100% { border-color: #00ff00; }
-        }
+        @keyframes neonRYG { 0% { border-color: #ff0000; } 50% { border-color: #ffcc00; } 100% { border-color: #00ff00; } }
 
-        .slide-indicator {
-            position: absolute;
-            top: 1.2rem;
-            right: 2rem;
-            font-size: 0.85rem;
-            color: #ffe680;
-            letter-spacing: 3px;
-        }
-        .question-title {
-            font-size: clamp(1.2rem, 2.8vw, 2.1rem);
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 0 0 8px #ffcc00, 0 0 18px #ff0000;
-            text-align: center;
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 2px solid rgba(255, 204, 0, 0.6);
-        }
+        .slide-indicator { position: absolute; top: 1.2rem; right: 2rem; font-size: 0.85rem; color: #ffe680; letter-spacing: 3px; }
+        .question-title { font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 700; color: #ffffff; text-shadow: 0 0 8px #ffcc00, 0 0 18px #ff0000; text-align: center; margin-top: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 2px solid rgba(255, 204, 0, 0.6); }
 
-        .toolbar {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-        .tool-btn {
-            background: rgba(255, 204, 0, 0.08);
-            color: #ffe680;
-            border: 2px solid #ffcc00;
-            border-radius: 0.7rem;
-            padding: 0.55rem 1.2rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
+        .toolbar { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .tool-btn { background: rgba(255, 204, 0, 0.08); color: #ffe680; border: 2px solid #ffcc00; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; text-transform: uppercase; font-weight: bold; }
         .tool-btn.active { background: #ffcc00; color: #1a1200; }
 
-        .workspace {
-            flex: 1;
-            position: relative;
-            border-radius: 1.2rem;
-            border: 2px dashed rgba(255, 204, 0, 0.5);
-            background: rgba(15, 15, 5, 0.4);
-            overflow: hidden;
-            min-height: 280px;
-        }
+        .workspace { flex: 1; position: relative; border-radius: 1.2rem; border: 2px dashed rgba(255, 204, 0, 0.5); background: rgba(15, 15, 5, 0.4); overflow: hidden; min-height: 280px; }
         .question-slide { display: none; flex-direction: column; flex: 1; height: 100%; }
         .question-slide.active { display: flex; }
 
-        .text-answer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            resize: none;
-            padding: 1.5rem;
-            font-size: 1.3rem;
-            color: #f0ffe0;
-            font-family: inherit;
-        }
-        .text-answer:disabled { cursor: not-allowed; opacity: 0.6; }
+        .text-answer { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; resize: none; padding: 1.5rem; font-size: 1.3rem; color: #f0ffe0; font-family: inherit; }
+        .text-answer:disabled { cursor: not-allowed; opacity: 0.7; }
 
-        .draw-canvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            cursor: crosshair;
-            touch-action: none;
-            z-index: 10;
-        }
+        .draw-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; cursor: crosshair; touch-action: none; z-index: 10; }
         .workspace.draw-mode .text-answer { display: none; }
         .workspace.draw-mode .draw-canvas { display: block; }
-        .workspace.read-only .draw-canvas { pointer-events: none; cursor: not-allowed; }
+        .workspace.read-only .draw-canvas { pointer-events: none; }
 
-        .nav-bar {
-            position: absolute;
-            bottom: 1.2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 1.2rem;
-        }
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.7);
-            color: #ffe680;
-            border: 2px solid #ffcc00;
-            border-radius: 2rem;
-            padding: 0.6rem 1.6rem;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .nav-bar { position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1.2rem; }
+        .nav-btn { background: rgba(0, 0, 0, 0.7); color: #ffe680; border: 2px solid #ffcc00; border-radius: 2rem; padding: 0.6rem 1.6rem; cursor: pointer; font-weight: bold; }
         .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+        /* 2. PANEL LATERAL PLEGABLE ESTILO MEET (SOLO PARA PROFESOR) */
+        .meet-drawer {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background: rgba(18, 22, 28, 0.96);
+            border-left: 3px solid #ffcc00;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
+            z-index: 150;
+            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+        }
+        .meet-drawer.open { right: 0; }
+
+        /* Botón de la pestaña plegable */
+        .drawer-toggle {
+            position: absolute;
+            top: 50%;
+            left: -48px;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 60px;
+            background: #ffcc00;
+            color: #000;
+            border: none;
+            border-radius: 12px 0 0 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: -4px 0 12px rgba(255, 204, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drawer-header { border-bottom: 2px solid #30363d; padding-bottom: 0.8rem; margin-bottom: 1rem; }
+        .drawer-header h3 { color: #ffcc00; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        .student-card { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 0.8rem 1rem; margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: space-between; }
+        .student-info { display: flex; align-items: center; gap: 0.6rem; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #8b949e; }
+        .status-dot.online { background: #3fb950; box-shadow: 0 0 8px #3fb950; }
+
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #30363d; transition: .3s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: #238636; }
+        input:checked + .slider:before { transform: translateX(22px); }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -385,19 +214,20 @@
         </div>
     </div>
 
-    <!-- VISTA PANEL PROFESOR -->
-    <div class="teacher-view" id="teacherView">
-        <h1>
-            <span>👨‍🏫 Control del Profesor</span>
-            <span style="font-size: 0.9rem; color: #3fb950;" id="activeRoomTag">🟢 SALA: QUIMI</span>
-        </h1>
-        <div id="studentList">
-            <p style="color: #8b949e;">Buscando estudiantes conectados...</p>
+    <!-- PANEL PLEGABLE TIPO MEET (CONTROL DE PERMISOS PARA EL PROFESOR) -->
+    <div class="meet-drawer" id="meetDrawer">
+        <button class="drawer-toggle" onclick="toggleDrawer()" title="Panel de Participantes">👥</button>
+        <div class="drawer-header">
+            <h3>👥 Control de Clase</h3>
+            <span style="font-size: 0.8rem; color: #3fb950;" id="activeRoomTag">🟢 SALA: QUIMI</span>
+        </div>
+        <div id="studentList" style="flex: 1; overflow-y: auto;">
+            <p style="color: #8b949e; font-size: 0.9rem;">Esperando estudiantes...</p>
         </div>
     </div>
 
-    <!-- VISTA ESTUDIANTE -->
-    <div class="slide-container" id="studentView" style="display: none;">
+    <!-- VISTA PRINCIPAL (PANTALLA COMPARTIDA) -->
+    <div class="slide-container" id="mainContainer">
         <div class="profe-logo">PROFE</div>
         
         <div class="neon-box">
@@ -411,7 +241,7 @@
                     <button class="tool-btn" id="btnDraw1" onclick="setMode(1, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace1">
-                    <textarea class="text-answer" id="text1" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <textarea class="text-answer" id="text1" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas1"></canvas>
                 </div>
             </div>
@@ -423,7 +253,7 @@
                     <button class="tool-btn" id="btnDraw2" onclick="setMode(2, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace2">
-                    <textarea class="text-answer" id="text2" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <textarea class="text-answer" id="text2" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas2"></canvas>
                 </div>
             </div>
@@ -435,7 +265,7 @@
                     <button class="tool-btn" id="btnDraw3" onclick="setMode(3, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace3">
-                    <textarea class="text-answer" id="text3" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <textarea class="text-answer" id="text3" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas3"></canvas>
                 </div>
             </div>
@@ -447,7 +277,7 @@
                     <button class="tool-btn" id="btnDraw4" onclick="setMode(4, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace4">
-                    <textarea class="text-answer" id="text4" placeholder="Describe aquí..." disabled></textarea>
+                    <textarea class="text-answer" id="text4" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas4"></canvas>
                 </div>
             </div>
@@ -459,7 +289,7 @@
                     <button class="tool-btn" id="btnDraw5" onclick="setMode(5, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace5">
-                    <textarea class="text-answer" id="text5" placeholder="Describe aquí..." disabled></textarea>
+                    <textarea class="text-answer" id="text5" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas5"></canvas>
                 </div>
             </div>
@@ -471,7 +301,7 @@
                     <button class="tool-btn" id="btnDraw6" onclick="setMode(6, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace6">
-                    <textarea class="text-answer" id="text6" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <textarea class="text-answer" id="text6" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas6"></canvas>
                 </div>
             </div>
@@ -483,7 +313,7 @@
                     <button class="tool-btn" id="btnDraw7" onclick="setMode(7, 'draw')">✎ Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace7">
-                    <textarea class="text-answer" id="text7" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <textarea class="text-answer" id="text7" placeholder="Esperando interacción..." disabled></textarea>
                     <canvas class="draw-canvas" id="canvas7"></canvas>
                 </div>
             </div>
@@ -532,6 +362,10 @@
             }
         }
 
+        function toggleDrawer() {
+            document.getElementById('meetDrawer').classList.toggle('open');
+        }
+
         function handleLogin() {
             const name = document.getElementById('userName').value.trim();
             roomCode = document.getElementById('roomCode').value.trim().toUpperCase().replace(/\s+/g, '-');
@@ -545,21 +379,20 @@
             document.getElementById('loginModal').style.display = 'none';
 
             if (currentRole === 'teacher') {
-                if (pass === "mejia") {
-                    document.getElementById('teacherView').style.display = 'block';
-                    document.getElementById('activeRoomTag').textContent = `🟢 SALA: ${roomCode}`;
-                    initTeacherPanel(roomCode);
-                } else {
-                    alert("Contraseña de profesor incorrecta.");
-                    document.getElementById('loginModal').style.display = 'flex';
-                }
+                document.getElementById('meetDrawer').style.display = 'flex';
+                document.getElementById('activeRoomTag').textContent = `🟢 SALA: ${roomCode}`;
+                document.getElementById('meetDrawer').classList.add('open');
+                initTeacherPanel(roomCode);
             } else {
-                document.getElementById('studentView').style.display = 'block';
+                document.getElementById('meetDrawer').style.display = 'none';
                 initStudentSession(name, roomCode);
-                setTimeout(resizeCanvases, 300);
             }
+
+            setTimeout(resizeCanvases, 300);
+            listenSharedCanvasAndText(roomCode);
         }
 
+        // --- LÓGICA ESTUDIANTE ---
         function initStudentSession(name, roomCode) {
             studentId = 'std_' + Date.now();
             const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
@@ -581,10 +414,10 @@
         function updatePermissionsUI() {
             const banner = document.getElementById('permBanner');
             if (canWrite) {
-                banner.textContent = `✏️ HABILITADO (${roomCode})`;
+                banner.textContent = `✏️ PANTALLA ACTIVA (${roomCode})`;
                 banner.className = "permission-banner unlocked";
             } else {
-                banner.textContent = `🔒 LECTURA (${roomCode})`;
+                banner.textContent = `🔒 MODO LECTURA (${roomCode})`;
                 banner.className = "permission-banner locked";
             }
 
@@ -599,6 +432,7 @@
             }
         }
 
+        // --- LÓGICA PROFESOR ---
         function initTeacherPanel(roomCode) {
             const roomRef = db.ref(`rooms/${roomCode}/students`);
             roomRef.on('value', (snapshot) => {
@@ -613,7 +447,7 @@
 
             const keys = Object.keys(students);
             if (keys.length === 0) {
-                listContainer.innerHTML = `<p style="color: #8b949e;">Esperando a que ingresen estudiantes en la sala <strong>${roomCode}</strong>...</p>`;
+                listContainer.innerHTML = `<p style="color: #8b949e; font-size: 0.85rem;">No hay estudiantes conectados en <strong>${roomCode}</strong>.</p>`;
                 return;
             }
 
@@ -625,7 +459,7 @@
                 card.innerHTML = `
                     <div class="student-info">
                         <span class="status-dot ${student.online ? 'online' : ''}"></span>
-                        <strong style="font-size: 1.1rem; color: #fff;">${student.name}</strong>
+                        <strong style="font-size: 0.95rem; color: #fff;">${student.name}</strong>
                     </div>
                     <label class="switch">
                         <input type="checkbox" ${student.canWrite ? 'checked' : ''} onchange="togglePermission('${roomCode}', '${id}', this.checked)">
@@ -642,6 +476,45 @@
             });
         }
 
+        // --- SINCRONIZACIÓN EN TIEMPO REAL DE TEXTO Y PIZARRA ---
+        function listenSharedCanvasAndText(roomCode) {
+            for (let i = 1; i <= totalSlides; i++) {
+                // Sincronizar Texto
+                const ta = document.getElementById(`text${i}`);
+                const textRef = db.ref(`rooms/${roomCode}/live/text${i}`);
+
+                ta.addEventListener('input', () => {
+                    if (canWrite) {
+                        textRef.set(ta.value);
+                    }
+                });
+
+                textRef.on('value', (snapshot) => {
+                    const val = snapshot.val();
+                    if (val !== null && (!canWrite || currentRole === 'teacher')) {
+                        ta.value = val;
+                    }
+                });
+
+                // Sincronizar Pizarra
+                const canvasRef = db.ref(`rooms/${roomCode}/live/canvas${i}`);
+                canvasRef.on('value', (snapshot) => {
+                    const imgData = snapshot.val();
+                    if (imgData && (!canWrite || currentRole === 'teacher')) {
+                        const canvas = document.getElementById(`canvas${i}`);
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        img.onload = () => {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, 0, 0);
+                        };
+                        img.src = imgData;
+                    }
+                });
+            }
+        }
+
+        // --- CONFIGURACIÓN DE PANTALLA Y PIZARRA ---
         function changeSlide(dir) {
             document.getElementById(`slide${currentSlide}`).classList.remove('active');
             currentSlide += dir;
@@ -670,7 +543,6 @@
             }
         }
 
-        // --- 3. PIZARRA HA DIBUJO APARTADO (CANVAS) ---
         function resizeCanvas(i) {
             const canvas = document.getElementById(`canvas${i}`);
             if (canvas && canvas.parentElement) {
@@ -686,6 +558,7 @@
         }
         window.addEventListener('resize', resizeCanvases);
 
+        // EVENTOS DE DIBUJO CON TRANSMISIÓN A FIREBASE
         for (let i = 1; i <= totalSlides; i++) {
             const canvas = document.getElementById(`canvas${i}`);
             if (!canvas) continue;
@@ -696,10 +569,7 @@
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
+                return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
             function startDraw(e) {
@@ -722,16 +592,20 @@
             }
 
             function stopDraw() {
+                if (drawing && canWrite) {
+                    drawing = false;
+                    // Guardar trazado en Firebase para retransmitir a todos
+                    const dataUrl = canvas.toDataURL();
+                    db.ref(`rooms/${roomCode}/live/canvas${i}`).set(dataUrl);
+                }
                 drawing = false;
             }
 
-            // Mouse Events
             canvas.addEventListener('mousedown', startDraw);
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDraw);
             canvas.addEventListener('mouseleave', stopDraw);
 
-            // Touch Events (Móviles y Tablets)
             canvas.addEventListener('touchstart', startDraw);
             canvas.addEventListener('touchmove', draw);
             canvas.addEventListener('touchend', stopDraw);
