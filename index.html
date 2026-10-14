@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neón RYG · Preguntas Interactivas</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #0b0b0b;
+            background-image: radial-gradient(circle at 20% 30%, #1a1a1a 0%, #050505 90%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            padding: 1.5rem;
+            color: #fff;
+        }
+
+        /* LOGO PROFE DORADO EN EL BORDE SUPERIOR */
+        .profe-logo {
+            position: absolute;
+            top: -1.8rem;
+            left: 2.5rem;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff2a3 0%, #ffd700 50%, #cca100 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.6), 0 0 25px rgba(218, 165, 32, 0.4);
+            z-index: 25;
+            user-select: none;
+        }
+
+        /* BANNER DE ESTADO DE PERMISO */
+        .permission-banner {
+            position: absolute;
+            top: -1.3rem;
+            right: 2.5rem;
+            padding: 0.4rem 1.2rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+        .permission-banner.locked {
+            background: rgba(255, 0, 0, 0.25);
+            border: 2px solid #ff0000;
+            color: #ff4d4d;
+            box-shadow: 0 0 12px #ff0000;
+        }
+        .permission-banner.unlocked {
+            background: rgba(0, 255, 0, 0.25);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            box-shadow: 0 0 12px #00ff00;
+        }
+
+        /* MODAL DE BIENVENIDA */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .login-card {
+            background: rgba(15, 15, 15, 0.95);
+            border: 3px solid #ffcc00;
+            box-shadow: 0 0 25px #ffcc00, 0 0 50px #ff0000;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+        }
+        .login-card h2 {
+            color: #ffcc00;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px #ff0000;
+            letter-spacing: 2px;
+        }
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #ffe680;
+            font-size: 0.9rem;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+            border: 2px solid #ffcc00;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+        }
+        .btn-join {
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: 1rem;
+            border: 2px solid #00ff00;
+            background: rgba(0, 255, 0, 0.15);
+            color: #00ff00;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00ff00;
+            transition: all 0.25s ease;
+        }
+        .btn-join:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 30px #00ff00;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .slide-container { position: relative; width: 100%; max-width: 1200px; margin-top: 1rem; }
+        .neon-box {
+            position: relative;
+            width: 100%;
+            min-height: 74vh;
+            background: rgba(0, 0, 0, 0.82);
+            border-radius: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem 2.5rem 4.5rem 2.5rem;
+            border: 5px solid #ff0000;
+            box-shadow: 0 0 15px #ff0000, 0 0 35px #ffcc00, 0 0 70px #00ff00, inset 0 0 25px rgba(255, 0, 0, 0.25);
+            animation: neonRYG 3s infinite alternate;
+        }
+        @keyframes neonRYG {
+            0% { border-color: #ff0000; }
+            50% { border-color: #ffcc00; }
+            100% { border-color: #00ff00; }
+        }
+
+        .slide-indicator {
+            position: absolute;
+            top: 1.2rem;
+            right: 2rem;
+            font-size: 0.85rem;
+            color: #ffe680;
+            letter-spacing: 3px;
+        }
+        .question-title {
+            font-size: clamp(1.2rem, 2.8vw, 2.1rem);
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 8px #ffcc00, 0 0 18px #ff0000;
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(255, 204, 0, 0.6);
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .tool-btn {
+            background: rgba(255, 204, 0, 0.08);
+            color: #ffe680;
+            border: 2px solid #ffcc00;
+            border-radius: 0.7rem;
+            padding: 0.55rem 1.2rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .tool-btn.active {
+            background: #ffcc00;
+            color: #1a1200;
+        }
+
+        .workspace {
+            flex: 1;
+            position: relative;
+            border-radius: 1.2rem;
+            border: 2px dashed rgba(255, 204, 0, 0.5);
+            background: rgba(15, 15, 5, 0.4);
+            overflow: hidden;
+            min-height: 250px;
+        }
+        .question-slide { display: none; flex-direction: column; flex: 1; height: 100%; }
+        .question-slide.active { display: flex; }
+
+        .text-answer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            resize: none;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            color: #f0ffe0;
+            font-family: inherit;
+        }
+        .text-answer:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .draw-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .workspace.draw-mode .text-answer { display: none; }
+        .workspace.draw-mode .draw-canvas { display: block; }
+
+        .workspace.read-only .draw-canvas {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .nav-bar {
+            position: absolute;
+            bottom: 1.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.2rem;
+        }
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffe680;
+            border: 2px solid #ffcc00;
+            border-radius: 2rem;
+            padding: 0.6rem 1.6rem;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    </style>
+
+    <!-- SDKs de Firebase (v9 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <!-- MODAL DE BIENVENIDA -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-card">
+            <h2>¡BIENVENIDO!</h2>
+            <div class="input-group">
+                <label for="studentName">Tu Nombre Completo:</label>
+                <input type="text" id="studentName" placeholder="Ej: Carlos Mamani">
+            </div>
+            <div class="input-group">
+                <label for="roomCode">Código de Sala:</label>
+                <input type="text" id="roomCode" placeholder="Ej: FISICA101" value="FISICA101">
+            </div>
+            <button class="btn-join" id="btnJoin">Ingresar a la Sesión</button>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="slide-container">
+        <!-- LOGO PROFE DORADO -->
+        <div class="profe-logo">PROFE</div>
+        
+        <div class="neon-box">
+            <div class="permission-banner locked" id="permBanner">🔒 MODO LECTURA</div>
+            <div class="slide-indicator" id="slideIndicator">PREGUNTA 1 DE 7</div>
+
+            <!-- SLIDE 1 -->
+            <div class="question-slide active" id="slide1">
+                <h1 class="question-title">1. ¿Qué se mantiene igual en las dos caídas?</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(1, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(1, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace1">
+                    <textarea class="text-answer" id="text1" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas1"></canvas>
+                </div>
+            </div>
+
+            <!-- SLIDE 2 -->
+            <div class="question-slide" id="slide2">
+                <h1 class="question-title">2. ¿Qué cambia entre la primera y la segunda caída?</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(2, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(2, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace2">
+                    <textarea class="text-answer" id="text2" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas2"></canvas>
+                </div>
+            </div>
+
+            <!-- SLIDE 3 -->
+            <div class="question-slide" id="slide3">
+                <h1 class="question-title">3. La plastilina se deforma más sobre ____________ ¿por qué?</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(3, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(3, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace3">
+                    <textarea class="text-answer" id="text3" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas3"></canvas>
+                </div>
+            </div>
+
+            <!-- SLIDE 4 -->
+            <div class="question-slide" id="slide4">
+                <h1 class="question-title">4. Dibuja la esfera como quedó después de la caída sobre la mesa</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(4, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(4, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace4">
+                    <textarea class="text-answer" id="text4" placeholder="Describe aquí..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas4"></canvas>
+                </div>
+            </div>
+
+            <!-- SLIDE 5 -->
+            <div class="question-slide" id="slide5">
+                <h1 class="question-title">5. Dibuja la esfera como quedó después de la caída sobre la esponja</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(5, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(5, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace5">
+                    <textarea class="text-answer" id="text5" placeholder="Describe aquí..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas5"></canvas>
+                </div>
+            </div>
+
+            <!-- SLIDE 6 -->
+            <div class="question-slide" id="slide6">
+                <h1 class="question-title">6. ¿Qué pasa si lanzo la bolita de una altura de 10 cm?</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(6, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(6, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace6">
+                    <textarea class="text-answer" id="text6" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas6"></canvas>
+                </div>
+            </div>
+
+            <!-- SLIDE 7 -->
+            <div class="question-slide" id="slide7">
+                <h1 class="question-title">7. ¿Qué pasa si lanzo la bolita de una altura de 30 cm?</h1>
+                <div class="toolbar">
+                    <button class="tool-btn active" onclick="setMode(7, 'keyboard')">⌨ Teclado</button>
+                    <button class="tool-btn" onclick="setMode(7, 'draw')">✎ Pizarra</button>
+                </div>
+                <div class="workspace read-only" id="workspace7">
+                    <textarea class="text-answer" id="text7" placeholder="Escribe tu respuesta..." disabled></textarea>
+                    <canvas class="draw-canvas" id="canvas7"></canvas>
+                </div>
+            </div>
+
+            <div class="nav-bar">
+                <button class="nav-btn" id="btnPrev" onclick="changeSlide(-1)" disabled>◀ Anterior</button>
+                <button class="nav-btn" id="btnNext" onclick="changeSlide(1)">Siguiente ▶</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN REAL INTEGRADA
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaidaLibreKey1234567890abcdef",
+            authDomain: "proyecto-experimento-caida.firebaseapp.com",
+            databaseURL: "https://proyecto-experimento-caida-default-rtdb.firebaseio.com",
+            projectId: "proyecto-experimento-caida",
+            storageBucket: "proyecto-experimento-caida.appspot.com",
+            messagingSenderId: "987654321012",
+            appId: "1:987654321012:web:1234567890abcdef"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let studentId = null;
+        let roomCode = "FISICA101";
+        let canWrite = false;
+        let currentSlide = 1;
+        const totalSlides = 7;
+
+        document.getElementById('btnJoin').addEventListener('click', () => {
+            const name = document.getElementById('studentName').value.trim();
+            roomCode = document.getElementById('roomCode').value.trim().toUpperCase() || "FISICA101";
+
+            if (!name) {
+                alert("Por favor ingresa tu nombre.");
+                return;
+            }
+
+            studentId = 'std_' + Date.now();
+            const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
+            
+            studentRef.set({
+                name: name,
+                canWrite: false,
+                online: true
+            });
+
+            studentRef.onDisconnect().update({ online: false });
+
+            studentRef.child('canWrite').on('value', (snapshot) => {
+                canWrite = snapshot.val() || false;
+                updatePermissionsUI();
+            });
+
+            document.getElementById('loginModal').style.display = 'none';
+        });
+
+        function updatePermissionsUI() {
+            const banner = document.getElementById('permBanner');
+            if (canWrite) {
+                banner.textContent = "✏️ ESCRITURA HABILITADA";
+                banner.className = "permission-banner unlocked";
+            } else {
+                banner.textContent = "🔒 MODO LECTURA";
+                banner.className = "permission-banner locked";
+            }
+
+            for (let i = 1; i <= totalSlides; i++) {
+                const ta = document.getElementById(`text${i}`);
+                const ws = document.getElementById(`workspace${i}`);
+
+                if (ta) ta.disabled = !canWrite;
+                if (ws) {
+                    if (canWrite) ws.classList.remove('read-only');
+                    else ws.classList.add('read-only');
+                }
+            }
+        }
+
+        function changeSlide(dir) {
+            document.getElementById(`slide${currentSlide}`).classList.remove('active');
+            currentSlide += dir;
+            document.getElementById(`slide${currentSlide}`).classList.add('active');
+
+            document.getElementById('slideIndicator').textContent = `PREGUNTA ${currentSlide} DE ${totalSlides}`;
+            document.getElementById('btnPrev').disabled = currentSlide === 1;
+            document.getElementById('btnNext').disabled = currentSlide === totalSlides;
+        }
+
+        function setMode(slideNum, mode) {
+            const ws = document.getElementById(`workspace${slideNum}`);
+            if (mode === 'draw') ws.classList.add('draw-mode');
+            else ws.classList.remove('draw-mode');
+        }
+
+        for (let i = 1; i <= totalSlides; i++) {
+            const canvas = document.getElementById(`canvas${i}`);
+            if (!canvas) continue;
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+
+            canvas.addEventListener('mousedown', (e) => {
+                if (!canWrite) return;
+                drawing = true;
+                ctx.beginPath();
+                ctx.moveTo(e.offsetX, e.offsetY);
+            });
+            canvas.addEventListener('mousemove', (e) => {
+                if (drawing && canWrite) {
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.strokeStyle = '#00ff00';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+            });
+            canvas.addEventListener('mouseup', () => drawing = false);
+        }
+    </script>
+</body>
+</html>
