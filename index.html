@@ -344,6 +344,10 @@
         }
         .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     </style>
+
+    <!-- SDKs de Firebase v9 Compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -487,7 +491,18 @@
     </div>
 
     <script>
-        const FIREBASE_BASE_URL = "https://proyecto-experimento-caida-default-rtdb.firebaseio.com";
+        // CONFIGURACIÓN OFICIAL DE TU PROYECTO "caida-5d67a"
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3nHZf5TDhJolWch-WZnQXDzsMP4rDpVM",
+            authDomain: "caida-5d67a.firebaseapp.com",
+            databaseURL: "https://caida-5d67a-default-rtdb.firebaseio.com",
+            projectId: "caida-5d67a",
+            storageBucket: "caida-5d67a.firebasestorage.app",
+            messagingSenderId: "490809721128",
+            appId: "1:490809721128:web:dc34f249bbde52c6d2901d"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         let currentRole = 'student';
         let studentId = null;
@@ -529,45 +544,35 @@
                 if (pass === "mejia") {
                     document.getElementById('teacherView').style.display = 'block';
                     document.getElementById('activeRoomTag').textContent = `🟢 SALA: ${roomCode}`;
-                    startTeacherSync(roomCode);
+                    initTeacherPanel(roomCode);
                 } else {
                     alert("Contraseña de profesor incorrecta.");
                     document.getElementById('loginModal').style.display = 'flex';
                 }
             } else {
                 document.getElementById('studentView').style.display = 'block';
-                startStudentSync(name, roomCode);
+                initStudentSession(name, roomCode);
             }
         }
 
-        // --- MÓDULO ESTUDIANTE (API REST NATIVA) ---
-        async function startStudentSync(name, roomCode) {
+        // --- LÓGICA ESTUDIANTE ---
+        function initStudentSession(name, roomCode) {
             studentId = 'std_' + Date.now();
-            const studentUrl = `${FIREBASE_BASE_URL}/rooms/${roomCode}/students/${studentId}.json`;
+            const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
 
-            // Registrar estudiante inicialmente en Firebase
-            await fetch(studentUrl, {
-                method: 'PUT',
-                body: JSON.stringify({ name: name, canWrite: false, lastSeen: Date.now() })
+            studentRef.set({
+                name: name,
+                canWrite: false,
+                online: true
             });
 
-            // Reenviar latido cada 3 segundos para mantener estado activo
-            setInterval(() => {
-                fetch(studentUrl, {
-                    method: 'PATCH',
-                    body: JSON.stringify({ lastSeen: Date.now() })
-                });
-            }, 3000);
+            studentRef.onDisconnect().update({ online: false });
 
-            // Escuchar cambios de permiso de escritura cada 1.5 segundos
-            setInterval(async () => {
-                try {
-                    const res = await fetch(`${FIREBASE_BASE_URL}/rooms/${roomCode}/students/${studentId}/canWrite.json`);
-                    const val = await res.json();
-                    canWrite = val === true;
-                    updatePermissionsUI();
-                } catch(e) {}
-            }, 1500);
+            // Escuchar cambios del permiso de escritura
+            studentRef.child('canWrite').on('value', (snapshot) => {
+                canWrite = snapshot.val() || false;
+                updatePermissionsUI();
+            });
         }
 
         function updatePermissionsUI() {
@@ -591,23 +596,13 @@
             }
         }
 
-        // --- MÓDULO PROFESOR (API REST NATIVA) ---
-        function startTeacherSync(roomCode) {
-            fetchAndRenderStudents(roomCode);
-            // Sincronización continua de la lista de alumnos cada 1.5 segundos
-            setInterval(() => {
-                fetchAndRenderStudents(roomCode);
-            }, 1500);
-        }
-
-        async function fetchAndRenderStudents(roomCode) {
-            try {
-                const res = await fetch(`${FIREBASE_BASE_URL}/rooms/${roomCode}/students.json`);
-                const students = await res.json() || {};
+        // --- LÓGICA PROFESOR ---
+        function initTeacherPanel(roomCode) {
+            const roomRef = db.ref(`rooms/${roomCode}/students`);
+            roomRef.on('value', (snapshot) => {
+                const students = snapshot.val() || {};
                 renderStudentsForTeacher(students, roomCode);
-            } catch(e) {
-                console.error("Error consultando Firebase:", e);
-            }
+            });
         }
 
         function renderStudentsForTeacher(students, roomCode) {
@@ -620,17 +615,14 @@
                 return;
             }
 
-            const now = Date.now();
             keys.forEach(id => {
                 const student = students[id];
-                const isOnline = student.lastSeen && (now - student.lastSeen < 10000);
-
                 const card = document.createElement('div');
                 card.className = 'student-card';
 
                 card.innerHTML = `
                     <div class="student-info">
-                        <span class="status-dot ${isOnline ? 'online' : ''}"></span>
+                        <span class="status-dot ${student.online ? 'online' : ''}"></span>
                         <strong style="font-size: 1.1rem; color: #fff;">${student.name}</strong>
                     </div>
                     <label class="switch">
@@ -642,10 +634,9 @@
             });
         }
 
-        async function togglePermission(roomCode, studentId, canWrite) {
-            await fetch(`${FIREBASE_BASE_URL}/rooms/${roomCode}/students/${studentId}.json`, {
-                method: 'PATCH',
-                body: JSON.stringify({ canWrite: canWrite })
+        function togglePermission(roomCode, studentId, canWrite) {
+            db.ref(`rooms/${roomCode}/students/${studentId}`).update({
+                canWrite: canWrite
             });
         }
 
