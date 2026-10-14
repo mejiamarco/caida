@@ -105,9 +105,17 @@
         .slide-indicator { position: absolute; top: 1.2rem; right: 2rem; font-size: 0.85rem; color: #ffe680; letter-spacing: 3px; }
         .question-title { font-size: clamp(1.2rem, 2.5vw, 2rem); font-weight: 700; color: #ffffff; text-shadow: 0 0 8px #ffcc00, 0 0 18px #ff0000; text-align: center; margin-top: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 2px solid rgba(255, 204, 0, 0.6); }
 
+        /* BARRA DE HERRAMIENTAS CON COLORES Y BORRADO */
         .toolbar { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1rem; }
         .tool-btn { background: rgba(255, 204, 0, 0.08); color: #ffe680; border: 2px solid #ffcc00; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; text-transform: uppercase; font-weight: bold; }
         .tool-btn.active { background: #ffcc00; color: #1a1200; }
+
+        .color-palette { display: none; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.6); padding: 0.3rem 0.8rem; border-radius: 1rem; border: 1px solid #ffcc00; }
+        .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; transition: transform 0.2s; }
+        .color-dot:hover, .color-dot.active { transform: scale(1.25); box-shadow: 0 0 8px #fff; }
+
+        .btn-clear { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; font-weight: bold; display: none; }
+        .btn-clear:hover { background: #ff0000; color: #fff; box-shadow: 0 0 15px #ff0000; }
 
         .workspace { flex: 1; position: relative; border-radius: 1.2rem; border: 2px dashed rgba(255, 204, 0, 0.5); background: rgba(15, 15, 5, 0.4); overflow: hidden; min-height: 280px; }
         .question-slide { display: none; flex-direction: column; flex: 1; height: 100%; }
@@ -125,47 +133,23 @@
         .nav-btn { background: rgba(0, 0, 0, 0.7); color: #ffe680; border: 2px solid #ffcc00; border-radius: 2rem; padding: 0.6rem 1.6rem; cursor: pointer; font-weight: bold; }
         .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-        /* 2. PANEL LATERAL PLEGABLE ESTILO MEET (SOLO PARA PROFESOR) */
+        /* PANEL PLEGABLE TIPO MEET (PROFESOR) */
         .meet-drawer {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background: rgba(18, 22, 28, 0.96);
-            border-left: 3px solid #ffcc00;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.8);
-            z-index: 150;
-            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem 1rem;
+            position: fixed; top: 0; right: -340px; width: 340px; height: 100vh; background: rgba(18, 22, 28, 0.96); border-left: 3px solid #ffcc00; box-shadow: -5px 0 25px rgba(0,0,0,0.8); z-index: 150; transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; padding: 1.5rem 1rem;
         }
         .meet-drawer.open { right: 0; }
 
-        /* Botón de la pestaña plegable */
         .drawer-toggle {
-            position: absolute;
-            top: 50%;
-            left: -48px;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 60px;
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            border-radius: 12px 0 0 12px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: -4px 0 12px rgba(255, 204, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 50%; left: -48px; transform: translateY(-50%); width: 48px; height: 60px; background: #ffcc00; color: #000; border: none; border-radius: 12px 0 0 12px; font-size: 1.5rem; font-weight: bold; cursor: pointer; box-shadow: -4px 0 12px rgba(255, 204, 0, 0.5); display: flex; align-items: center; justify-content: center;
         }
 
         .drawer-header { border-bottom: 2px solid #30363d; padding-bottom: 0.8rem; margin-bottom: 1rem; }
         .drawer-header h3 { color: #ffcc00; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        .btn-master-clear {
+            width: 100%; padding: 0.75rem; background: rgba(255, 0, 0, 0.2); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.8rem; font-weight: bold; cursor: pointer; transition: all 0.2s ease; margin-bottom: 1rem;
+        }
+        .btn-master-clear:hover { background: #ff0000; color: #fff; box-shadow: 0 0 15px #ff0000; }
 
         .student-card { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 0.8rem 1rem; margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: space-between; }
         .student-info { display: flex; align-items: center; gap: 0.6rem; }
@@ -180,6 +164,7 @@
         input:checked + .slider:before { transform: translateX(22px); }
     </style>
 
+    <!-- SDKs de Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
@@ -214,19 +199,22 @@
         </div>
     </div>
 
-    <!-- PANEL PLEGABLE TIPO MEET (CONTROL DE PERMISOS PARA EL PROFESOR) -->
+    <!-- PANEL PLEGABLE TIPO MEET (CONTROL DEL PROFESOR) -->
     <div class="meet-drawer" id="meetDrawer">
         <button class="drawer-toggle" onclick="toggleDrawer()" title="Panel de Participantes">👥</button>
         <div class="drawer-header">
             <h3>👥 Control de Clase</h3>
             <span style="font-size: 0.8rem; color: #3fb950;" id="activeRoomTag">🟢 SALA: QUIMI</span>
         </div>
+
+        <button class="btn-master-clear" onclick="masterClearCurrentSlide()">🧹 Limpiar Pizarra en Vivo</button>
+
         <div id="studentList" style="flex: 1; overflow-y: auto;">
-            <p style="color: #8b949e; font-size: 0.9rem;">Esperando estudiantes...</p>
+            <p style="color: #8b949e; font-size: 0.85rem;">Esperando estudiantes...</p>
         </div>
     </div>
 
-    <!-- VISTA PRINCIPAL (PANTALLA COMPARTIDA) -->
+    <!-- VISTA PRINCIPAL DE PREGUNTAS -->
     <div class="slide-container" id="mainContainer">
         <div class="profe-logo">PROFE</div>
         
@@ -239,6 +227,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey1" onclick="setMode(1, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw1" onclick="setMode(1, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette1">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(1, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(1, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(1, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(1, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(1, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear1" onclick="clearLocalCanvas(1)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace1">
                     <textarea class="text-answer" id="text1" placeholder="Esperando interacción..." disabled></textarea>
@@ -251,6 +249,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey2" onclick="setMode(2, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw2" onclick="setMode(2, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette2">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(2, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(2, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(2, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(2, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(2, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear2" onclick="clearLocalCanvas(2)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace2">
                     <textarea class="text-answer" id="text2" placeholder="Esperando interacción..." disabled></textarea>
@@ -263,6 +271,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey3" onclick="setMode(3, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw3" onclick="setMode(3, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette3">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(3, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(3, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(3, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(3, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(3, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear3" onclick="clearLocalCanvas(3)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace3">
                     <textarea class="text-answer" id="text3" placeholder="Esperando interacción..." disabled></textarea>
@@ -275,6 +293,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey4" onclick="setMode(4, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw4" onclick="setMode(4, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette4">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(4, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(4, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(4, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(4, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(4, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear4" onclick="clearLocalCanvas(4)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace4">
                     <textarea class="text-answer" id="text4" placeholder="Esperando interacción..." disabled></textarea>
@@ -287,6 +315,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey5" onclick="setMode(5, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw5" onclick="setMode(5, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette5">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(5, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(5, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(5, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(5, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(5, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear5" onclick="clearLocalCanvas(5)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace5">
                     <textarea class="text-answer" id="text5" placeholder="Esperando interacción..." disabled></textarea>
@@ -299,6 +337,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey6" onclick="setMode(6, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw6" onclick="setMode(6, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette6">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(6, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(6, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(6, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(6, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(6, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear6" onclick="clearLocalCanvas(6)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace6">
                     <textarea class="text-answer" id="text6" placeholder="Esperando interacción..." disabled></textarea>
@@ -311,6 +359,16 @@
                 <div class="toolbar">
                     <button class="tool-btn active" id="btnKey7" onclick="setMode(7, 'keyboard')">⌨ Teclado</button>
                     <button class="tool-btn" id="btnDraw7" onclick="setMode(7, 'draw')">✎ Pizarra</button>
+                    
+                    <div class="color-palette" id="palette7">
+                        <div class="color-dot active" style="background: #00ff00;" onclick="selectColor(7, '#00ff00', this)"></div>
+                        <div class="color-dot" style="background: #ffcc00;" onclick="selectColor(7, '#ffcc00', this)"></div>
+                        <div class="color-dot" style="background: #ff0000;" onclick="selectColor(7, '#ff0000', this)"></div>
+                        <div class="color-dot" style="background: #00ffff;" onclick="selectColor(7, '#00ffff', this)"></div>
+                        <div class="color-dot" style="background: #ffffff;" onclick="selectColor(7, '#ffffff', this)"></div>
+                    </div>
+
+                    <button class="btn-clear" id="btnClear7" onclick="clearLocalCanvas(7)">🗑️ Borrar Pizarra</button>
                 </div>
                 <div class="workspace read-only" id="workspace7">
                     <textarea class="text-answer" id="text7" placeholder="Esperando interacción..." disabled></textarea>
@@ -344,6 +402,9 @@
         let canWrite = false;
         let currentSlide = 1;
         const totalSlides = 7;
+        const currentColor = {};
+
+        for(let i=1; i<=totalSlides; i++) currentColor[i] = '#00ff00';
 
         function selectRole(role) {
             currentRole = role;
@@ -392,7 +453,6 @@
             listenSharedCanvasAndText(roomCode);
         }
 
-        // --- LÓGICA ESTUDIANTE ---
         function initStudentSession(name, roomCode) {
             studentId = 'std_' + Date.now();
             const studentRef = db.ref(`rooms/${roomCode}/students/${studentId}`);
@@ -432,7 +492,6 @@
             }
         }
 
-        // --- LÓGICA PROFESOR ---
         function initTeacherPanel(roomCode) {
             const roomRef = db.ref(`rooms/${roomCode}/students`);
             roomRef.on('value', (snapshot) => {
@@ -471,22 +530,37 @@
         }
 
         function togglePermission(roomCode, studentId, canWrite) {
-            db.ref(`rooms/${roomCode}/students/${studentId}`).update({
-                canWrite: canWrite
-            });
+            db.ref(`rooms/${roomCode}/students/${studentId}`).update({ canWrite: canWrite });
         }
 
-        // --- SINCRONIZACIÓN EN TIEMPO REAL DE TEXTO Y PIZARRA ---
+        function selectColor(slideNum, color, elem) {
+            currentColor[slideNum] = color;
+            const dots = document.querySelectorAll(`#palette${slideNum} .color-dot`);
+            dots.forEach(d => d.classList.remove('active'));
+            elem.classList.add('active');
+        }
+
+        function clearLocalCanvas(slideNum) {
+            if (!canWrite && currentRole !== 'teacher') return;
+            const canvas = document.getElementById(`canvas${slideNum}`);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            db.ref(`rooms/${roomCode}/live/canvas${slideNum}`).set('');
+        }
+
+        function masterClearCurrentSlide() {
+            clearLocalCanvas(currentSlide);
+            db.ref(`rooms/${roomCode}/live/text${currentSlide}`).set('');
+            document.getElementById(`text${currentSlide}`).value = '';
+        }
+
         function listenSharedCanvasAndText(roomCode) {
             for (let i = 1; i <= totalSlides; i++) {
-                // Sincronizar Texto
                 const ta = document.getElementById(`text${i}`);
                 const textRef = db.ref(`rooms/${roomCode}/live/text${i}`);
 
                 ta.addEventListener('input', () => {
-                    if (canWrite) {
-                        textRef.set(ta.value);
-                    }
+                    if (canWrite) textRef.set(ta.value);
                 });
 
                 textRef.on('value', (snapshot) => {
@@ -496,13 +570,15 @@
                     }
                 });
 
-                // Sincronizar Pizarra
                 const canvasRef = db.ref(`rooms/${roomCode}/live/canvas${i}`);
                 canvasRef.on('value', (snapshot) => {
                     const imgData = snapshot.val();
-                    if (imgData && (!canWrite || currentRole === 'teacher')) {
-                        const canvas = document.getElementById(`canvas${i}`);
-                        const ctx = canvas.getContext('2d');
+                    const canvas = document.getElementById(`canvas${i}`);
+                    const ctx = canvas.getContext('2d');
+
+                    if (!imgData) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    } else if (!canWrite || currentRole === 'teacher') {
                         const img = new Image();
                         img.onload = () => {
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -514,7 +590,6 @@
             }
         }
 
-        // --- CONFIGURACIÓN DE PANTALLA Y PIZARRA ---
         function changeSlide(dir) {
             document.getElementById(`slide${currentSlide}`).classList.remove('active');
             currentSlide += dir;
@@ -530,16 +605,22 @@
             const ws = document.getElementById(`workspace${slideNum}`);
             const btnKey = document.getElementById(`btnKey${slideNum}`);
             const btnDraw = document.getElementById(`btnDraw${slideNum}`);
+            const palette = document.getElementById(`palette${slideNum}`);
+            const btnClear = document.getElementById(`btnClear${slideNum}`);
 
             if (mode === 'draw') {
                 ws.classList.add('draw-mode');
                 btnDraw.classList.add('active');
                 btnKey.classList.remove('active');
+                palette.style.display = 'flex';
+                btnClear.style.display = 'block';
                 resizeCanvas(slideNum);
             } else {
                 ws.classList.remove('draw-mode');
                 btnKey.classList.add('active');
                 btnDraw.classList.remove('active');
+                palette.style.display = 'none';
+                btnClear.style.display = 'none';
             }
         }
 
@@ -552,13 +633,10 @@
         }
 
         function resizeCanvases() {
-            for (let i = 1; i <= totalSlides; i++) {
-                resizeCanvas(i);
-            }
+            for (let i = 1; i <= totalSlides; i++) resizeCanvas(i);
         }
         window.addEventListener('resize', resizeCanvases);
 
-        // EVENTOS DE DIBUJO CON TRANSMISIÓN A FIREBASE
         for (let i = 1; i <= totalSlides; i++) {
             const canvas = document.getElementById(`canvas${i}`);
             if (!canvas) continue;
@@ -573,7 +651,7 @@
             }
 
             function startDraw(e) {
-                if (!canWrite) return;
+                if (!canWrite && currentRole !== 'teacher') return;
                 drawing = true;
                 const pos = getPos(e);
                 ctx.beginPath();
@@ -581,20 +659,19 @@
             }
 
             function draw(e) {
-                if (!drawing || !canWrite) return;
+                if (!drawing || (!canWrite && currentRole !== 'teacher')) return;
                 e.preventDefault();
                 const pos = getPos(e);
                 ctx.lineTo(pos.x, pos.y);
-                ctx.strokeStyle = '#00ff00';
+                ctx.strokeStyle = currentColor[i] || '#00ff00';
                 ctx.lineWidth = 4;
                 ctx.lineCap = 'round';
                 ctx.stroke();
             }
 
             function stopDraw() {
-                if (drawing && canWrite) {
+                if (drawing && (canWrite || currentRole === 'teacher')) {
                     drawing = false;
-                    // Guardar trazado en Firebase para retransmitir a todos
                     const dataUrl = canvas.toDataURL();
                     db.ref(`rooms/${roomCode}/live/canvas${i}`).set(dataUrl);
                 }
