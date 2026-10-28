@@ -88,7 +88,7 @@
 
         .input-group { margin-bottom: 1.2rem; text-align: left; }
         .input-group label { display: block; margin-bottom: 0.4rem; color: #ffe680; font-size: 0.9rem; }
-        .input-group input { width: 100%; padding: 0.8rem; border-radius: 0.8rem; border: 2px solid #ffcc00; background: #1a1a1a; color: #fff; font-size: 1rem; outline: none; }
+        .input-group input { width: 100%; padding: 0.8rem; border-radius: 0.8rem; border: 2px solid #ffcc00; background: #1a1a1a; color: #fff; font-size: 1rem; outline: none; text-transform: uppercase; }
 
         .btn-action {
             width: 100%; padding: 0.9rem; border-radius: 1rem; border: 2px solid #00ff00; background: rgba(0, 255, 0, 0.15); color: #00ff00; font-size: 1.1rem; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px #00ff00; transition: all 0.25s ease; margin-top: 0.5rem;
@@ -116,6 +116,9 @@
 
         .btn-clear { background: rgba(255, 0, 0, 0.25); color: #ff4d4d; border: 2px solid #ff0000; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; font-weight: bold; display: none; }
         .btn-clear:hover { background: #ff0000; color: #fff; box-shadow: 0 0 15px #ff0000; }
+
+        .btn-submit-work { background: rgba(0, 255, 0, 0.25); color: #00ff00; border: 2px solid #00ff00; border-radius: 0.7rem; padding: 0.55rem 1.2rem; cursor: pointer; font-weight: bold; display: none; }
+        .btn-submit-work:hover { background: #00ff00; color: #000; box-shadow: 0 0 15px #00ff00; }
 
         .workspace { flex: 1; position: relative; border-radius: 1.2rem; border: 2px dashed rgba(255, 204, 0, 0.5); background: rgba(15, 15, 5, 0.4); overflow: hidden; min-height: 280px; }
         .question-slide { display: none; flex-direction: column; flex: 1; height: 100%; }
@@ -181,12 +184,12 @@
 
             <div class="input-group">
                 <label for="userName">Tu Nombre Completo:</label>
-                <input type="text" id="userName" placeholder="Ej: Carlos Mamani">
+                <input type="text" id="userName" placeholder="Ej: CARLOS MAMANI" oninput="formatInput(this)">
             </div>
 
             <div class="input-group">
                 <label for="roomCode">Nombre o Código de Sala:</label>
-                <input type="text" id="roomCode" placeholder="Ej: QUIMI" value="QUIMI">
+                <input type="text" id="roomCode" placeholder="Ej: QUIMI" value="QUIMI" oninput="formatInput(this)">
             </div>
 
             <div class="input-group" id="passGroup" style="display: none;">
@@ -251,6 +254,7 @@
                                 </div>
 
                                 <button class="btn-clear" id="btnClear${i}" onclick="clearLocalCanvas(${i})">🗑️ Borrar Pizarra</button>
+                                <button class="btn-submit-work" id="btnSubmitWork${i}" onclick="submitWork(${i})">📤 Enviar Escritura</button>
                             </div>
                             <div class="workspace read-only" id="workspace${i}">
                                 <textarea class="text-answer" id="text${i}" placeholder="Esperando interacción..." disabled></textarea>
@@ -289,7 +293,26 @@
         const totalSlides = 7;
         const currentColor = {};
 
+        // Variables temporales locales para que el alumno dibuje en su canvas privado antes de enviar
+        const localCanvasData = {};
+
         for(let i=1; i<=totalSlides; i++) currentColor[i] = '#00ff00';
+
+        // Función para convertir a mayúsculas y quitar acentos de manera automática
+        function cleanText(str) {
+            if (!str) return "";
+            return str
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toUpperCase();
+        }
+
+        function formatInput(inputElem) {
+            const cursorStart = inputElem.selectionStart;
+            const cursorEnd = inputElem.selectionEnd;
+            inputElem.value = cleanText(inputElem.value);
+            inputElem.setSelectionRange(cursorStart, cursorEnd);
+        }
 
         function selectRole(role) {
             currentRole = role;
@@ -313,8 +336,8 @@
         }
 
         function handleLogin() {
-            const name = document.getElementById('userName').value.trim();
-            roomCode = document.getElementById('roomCode').value.trim().toUpperCase().replace(/\s+/g, '-');
+            const name = cleanText(document.getElementById('userName').value.trim());
+            roomCode = cleanText(document.getElementById('roomCode').value.trim().replace(/\s+/g, '-'));
             const pass = document.getElementById('userPassword').value;
 
             if (!name || !roomCode) {
@@ -369,7 +392,11 @@
             for (let i = 1; i <= totalSlides; i++) {
                 const ta = document.getElementById(`text${i}`);
                 const ws = document.getElementById(`workspace${i}`);
+                const btnSubmitWork = document.getElementById(`btnSubmitWork${i}`);
+                
                 if (ta) ta.disabled = !canWrite;
+                if (btnSubmitWork) btnSubmitWork.style.display = canWrite ? 'block' : 'none';
+
                 if (ws) {
                     if (canWrite) ws.classList.remove('read-only');
                     else ws.classList.add('read-only');
@@ -430,7 +457,10 @@
             const canvas = document.getElementById(`canvas${slideNum}`);
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            db.ref(`rooms/${roomCode}/live/canvas${slideNum}`).set('');
+            localCanvasData[slideNum] = '';
+            if (currentRole === 'teacher') {
+                db.ref(`rooms/${roomCode}/live/canvas${slideNum}`).set('');
+            }
         }
 
         function masterClearCurrentSlide() {
@@ -439,17 +469,43 @@
             document.getElementById(`text${currentSlide}`).value = '';
         }
 
+        // NUEVA FUNCIÓN: Envía el trabajo actual a la base de datos pública para que todos lo vean
+        function submitWork(slideNum) {
+            if (!canWrite && currentRole !== 'teacher') return;
+
+            const ta = document.getElementById(`text${slideNum}`);
+            const canvas = document.getElementById(`canvas${slideNum}`);
+
+            // Enviar texto en MAYÚSCULAS y sin acentos
+            const cleanContent = cleanText(ta.value);
+            ta.value = cleanContent;
+            db.ref(`rooms/${roomCode}/live/text${slideNum}`).set(cleanContent);
+
+            // Enviar canvas
+            const dataUrl = canvas.toDataURL();
+            db.ref(`rooms/${roomCode}/live/canvas${slideNum}`).set(dataUrl);
+
+            alert("¡Escritura enviada con éxito para que todos la vean!");
+        }
+
         function listenSharedCanvasAndText(roomCode) {
             for (let i = 1; i <= totalSlides; i++) {
                 const ta = document.getElementById(`text${i}`);
                 const textRef = db.ref(`rooms/${roomCode}/live/text${i}`);
 
+                // Si el alumno escribe, convertimos automáticamente a mayúsculas y sin acentos localmente en su textarea
                 ta.addEventListener('input', () => {
-                    if (canWrite) textRef.set(ta.value);
+                    if (canWrite) {
+                        const start = ta.selectionStart;
+                        const end = ta.selectionEnd;
+                        ta.value = cleanText(ta.value);
+                        ta.setSelectionRange(start, end);
+                    }
                 });
 
                 textRef.on('value', (snapshot) => {
                     const val = snapshot.val();
+                    // Solo actualiza la pantalla si NO está escribiendo o si es rol profesor
                     if (val !== null && (!canWrite || currentRole === 'teacher')) {
                         ta.value = val;
                     }
@@ -462,7 +518,9 @@
                     const ctx = canvas.getContext('2d');
 
                     if (!imgData) {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        if (!canWrite || currentRole === 'teacher') {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        }
                     } else if (!canWrite || currentRole === 'teacher') {
                         const img = new Image();
                         img.onload = () => {
@@ -557,8 +615,11 @@
             function stopDraw() {
                 if (drawing && (canWrite || currentRole === 'teacher')) {
                     drawing = false;
-                    const dataUrl = canvas.toDataURL();
-                    db.ref(`rooms/${roomCode}/live/canvas${i}`).set(dataUrl);
+                    // Solo guarda localmente hasta que pulse "Enviar Escritura" (a menos que sea profe)
+                    if (currentRole === 'teacher') {
+                        const dataUrl = canvas.toDataURL();
+                        db.ref(`rooms/${roomCode}/live/canvas${i}`).set(dataUrl);
+                    }
                 }
                 drawing = false;
             }
